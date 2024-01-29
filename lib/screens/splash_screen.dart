@@ -1,29 +1,75 @@
-import 'dart:async';
-
 import 'package:airecruit/screens/login_scren.dart';
-import 'package:airecruit/utils/globalColors.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:airecruit/screens/login_scren.dart';
+import 'package:flutter/material.dart';
 
-class SplashScreen extends StatelessWidget {
-  const SplashScreen({super.key});
+class SplashScreen extends StatefulWidget {
+  @override
+  _SplashScreenState createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Simulate a delay before navigating to the next screen
+    Future.delayed(Duration(seconds: 3), () {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => Login()),
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    Timer(Duration(seconds: 2), () {
-      Get.to(const Login());
-    });
     return Scaffold(
-      backgroundColor: GlobalColors.mainColor,
-      body: Center(
-          child: Text(
-        'Logo',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 30,
-          fontWeight: FontWeight.bold,
-        ),
-      )),
+      body: Stack(
+        children: [
+          // Background
+          Container(
+            color: Color.fromARGB(255, 169, 61, 6),
+          ),
+          // Logo and tagline
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 200,
+                height: 200,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('images/logo.png'),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Text(
+                'Your Ultimate Pomodoro\nProductivity Assistant',
+                style: TextStyle(
+                  color: Color(0xFFFFFFFF), // Changed color
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+          // Progress indicator
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              margin: EdgeInsets.only(bottom: 30),
+              width: 60,
+              height: 60,
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(
+                    Color(0xFFFFFFFF)), // Changed color
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
