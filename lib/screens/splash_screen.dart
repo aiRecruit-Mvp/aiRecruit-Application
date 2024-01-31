@@ -2,7 +2,7 @@ import 'package:airecruit/screens/login_scren.dart';
 import 'package:flutter/material.dart';
 import 'package:airecruit/screens/login_scren.dart';
 import 'package:flutter/material.dart';
-
+//
 class SplashScreen extends StatefulWidget {
   @override
   _SplashScreenState createState() => _SplashScreenState();
