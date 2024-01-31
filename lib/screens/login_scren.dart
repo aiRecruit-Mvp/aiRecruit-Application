@@ -18,7 +18,10 @@ class Login extends StatelessWidget {
             children: [
               Text(
                 "Join ai-Recruit Today",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 239, 91, 17)),
               ),
               SizedBox(height: 20),
               Text(
@@ -45,21 +48,60 @@ class Login extends StatelessWidget {
                     suffixIcon: IconButton(
                       onPressed: () {},
                       icon: Icon(Icons.visibility),
+                      color: Color.fromARGB(255, 239, 91, 17),
                     ),
                   ),
                   obscureText: true,
                 ),
               ),
               SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32),
-                child: ElevatedButton(
-                  onPressed: () {},
-                  child: Text("Sign up"),
-                ),
+              Row(
+                children: [
+                  Transform.scale(
+                    scale: 0.7,
+                    child: Checkbox(
+                      value: false,
+                      onChanged: (value) {},
+                    ),
+                  ),
+                  Text("Remember me"),
+                ],
               ),
               SizedBox(height: 20),
-              Text("Already have an account? Log in"),
+              Row(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32),
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                          primary: Color.fromARGB(255, 239, 91, 17),
+                          onPrimary: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          padding: EdgeInsets.symmetric(vertical: 15),
+                        ),
+                        child: Text("Log in"),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Doesn't have an account? "),
+                  Text(
+                    "Sign up",
+                    style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        color: Color.fromARGB(255, 239, 91, 17)),
+                  ),
+                ],
+              ),
               SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -75,9 +117,12 @@ class Login extends StatelessWidget {
                   IconButton(
                     onPressed: () {},
                     icon: Icon(Icons.branding_watermark),
+                    
+
                   ),
                 ],
               ),
+             
             ],
           ),
         ),
