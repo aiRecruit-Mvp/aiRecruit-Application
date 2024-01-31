@@ -28,7 +28,7 @@ class _SplashScreenState extends State<SplashScreen> {
         children: [
           // Background
           Container(
-            color: Color.fromARGB(255, 221, 120, 70),
+            color: Color.fromARGB(255, 239, 91, 17),
           ),
           // Logo and tagline
           Column(
