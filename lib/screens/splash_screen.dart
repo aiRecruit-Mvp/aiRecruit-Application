@@ -2,7 +2,7 @@ import 'package:airecruit/screens/login_scren.dart';
 import 'package:flutter/material.dart';
 import 'package:airecruit/screens/login_scren.dart';
 import 'package:flutter/material.dart';
-
+//
 class SplashScreen extends StatefulWidget {
   @override
   _SplashScreenState createState() => _SplashScreenState();
@@ -28,7 +28,7 @@ class _SplashScreenState extends State<SplashScreen> {
         children: [
           // Background
           Container(
-            color: Color.fromARGB(255, 169, 61, 6),
+            color: Color.fromARGB(255, 239, 91, 17),
           ),
           // Logo and tagline
           Column(
@@ -45,7 +45,7 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
               SizedBox(height: 20),
               Text(
-                'Your Ultimate Pomodoro\nProductivity Assistant',
+                'Your Ai-Recruiter\ Assistant',
                 style: TextStyle(
                   color: Color(0xFFFFFFFF), // Changed color
                   fontSize: 24,
