@@ -1,10 +1,21 @@
+import 'package:airecruit/controllers/userController.dart';
 import 'package:flutter/material.dart';
 
 void main() {
   runApp(Login());
 }
 
-class Login extends StatelessWidget {
+class Login extends StatefulWidget {
+  @override
+  _LoginState createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+final UserController userController = UserController();
+
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -74,7 +85,12 @@ class Login extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 32),
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          userController.loginUser(
+                            emailController.text,
+                            passwordController.text,
+                          );
+                        },
                         style: ElevatedButton.styleFrom(
                           primary: Color.fromARGB(255, 239, 91, 17),
                           onPrimary: Colors.white,
