@@ -1,3 +1,4 @@
+import 'package:airecruit/controllers/userController.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -14,27 +15,8 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+final UserController userController = UserController();
 
-  Future<void> loginUser(String username, String password) async {
-    final response = await http.get(
-      Uri.parse('http://127.0.0.1:5000/signin/$username/$password'),
-    );
-
-    if (response.statusCode == 200) {
-      bool loginResult = jsonDecode(response.body);
-
-      if (loginResult) {
-        // Navigate to the next screen or perform desired action on successful login
-        print('Login successful');
-      } else {
-        // Show an error message or handle accordingly on login failure
-        print('Login failed');
-      }
-    } else {
-      // Handle HTTP error
-      print('Error: ${response.statusCode}');
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +90,7 @@ class _LoginState extends State<Login> {
                       padding: const EdgeInsets.symmetric(horizontal: 32),
                       child: ElevatedButton(
                         onPressed: () {
-                          loginUser(
+                          userController.loginUser(
                             emailController.text,
                             passwordController.text,
                           );
