@@ -1,5 +1,7 @@
 import 'package:airecruit/controllers/userController.dart';
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(Login());
@@ -36,13 +38,14 @@ final UserController userController = UserController();
               ),
               SizedBox(height: 20),
               Text(
-                "Unlock Your Professional career !",
+                "Unlock Your Professional Career!",
                 style: TextStyle(fontSize: 18),
               ),
               SizedBox(height: 40),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 32),
                 child: TextField(
+                  controller: emailController,
                   decoration: InputDecoration(
                     labelText: "Email",
                     border: OutlineInputBorder(),
@@ -53,6 +56,7 @@ final UserController userController = UserController();
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 32),
                 child: TextField(
+                  controller: passwordController,
                   decoration: InputDecoration(
                     labelText: "Password",
                     border: OutlineInputBorder(),
@@ -133,12 +137,9 @@ final UserController userController = UserController();
                   IconButton(
                     onPressed: () {},
                     icon: Icon(Icons.branding_watermark),
-                    
-
                   ),
                 ],
               ),
-             
             ],
           ),
         ),
