@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
-class FocusifySignUpPage extends StatefulWidget {
+class SignUp extends StatefulWidget {
   @override
-  _FocusifySignUpPageState createState() => _FocusifySignUpPageState();
+  _SignUpState createState() => _SignUpState();
 }
 
-class _FocusifySignUpPageState extends State<FocusifySignUpPage> {
+class _SignUpState extends State<SignUp> {
   final _formKey = GlobalKey<FormState>();
   String _email = '';
   String _password = '';
 
   void _submitForm() {
-    if (_formKey.currentState.validate()) {
-      _formKey.currentState.save();
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
       // Perform sign up logic here
     }
   }
@@ -56,13 +56,13 @@ class _FocusifySignUpPageState extends State<FocusifySignUpPage> {
                     TextFormField(
                       keyboardType: TextInputType.emailAddress,
                       validator: (value) {
-                        if (value.isEmpty) {
+                        if (value!.isEmpty) {
                           return 'Please enter your email';
                         }
                         return null;
                       },
                       onSaved: (value) {
-                        _email = value;
+                        _email = value!;
                       },
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
@@ -79,13 +79,13 @@ class _FocusifySignUpPageState extends State<FocusifySignUpPage> {
                     TextFormField(
                       obscureText: true,
                       validator: (value) {
-                        if (value.length < 8) {
+                        if (value!.length < 8) {
                           return 'Password must be at least 8 characters long';
                         }
                         return null;
                       },
                       onSaved: (value) {
-                        _password = value;
+                        _password = value!;
                       },
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
