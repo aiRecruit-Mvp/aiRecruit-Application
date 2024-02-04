@@ -1,3 +1,4 @@
+import 'package:airecruit/utils/globalColors.dart';
 import 'package:flutter/material.dart';
 
 class SignUp extends StatefulWidget {
@@ -9,6 +10,9 @@ class _SignUpState extends State<SignUp> {
   final _formKey = GlobalKey<FormState>();
   String _email = '';
   String _password = '';
+  String _fullname = '';
+
+
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
@@ -18,10 +22,7 @@ class _SignUpState extends State<SignUp> {
   }
 
   void _goToSignInPage() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => FocusifySignInPage()), // Assuming you have a FocusifySignInPage
-    );
+    
   }
 
   @override
@@ -35,7 +36,7 @@ class _SignUpState extends State<SignUp> {
             children: [
               SizedBox(height: 60),
               Text(
-                'Join Focusify Today 1',
+                'Join Focusify Today ',
                 style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
               ),
               Text(
@@ -48,6 +49,29 @@ class _SignUpState extends State<SignUp> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                     Text(
+                      'Fullname',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 8),
+                    TextFormField(
+                      keyboardType: TextInputType.emailAddress,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter your fullname';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        _fullname = value!;
+                      },
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        filled: true,
+                        fillColor: Colors.grey[200],
+                      ),
+                    ),
+                    SizedBox(height: 24),
                     Text(
                       'Email',
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -99,7 +123,7 @@ class _SignUpState extends State<SignUp> {
                         onPressed: _submitForm,
                         child: Text('Sign up'),
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.blue,
+                          primary: GlobalColors.primaryColor,
                           onPrimary: Colors.white,
                           padding: EdgeInsets.symmetric(horizontal: 48, vertical: 16),
                           shape: RoundedRectangleBorder(
@@ -120,7 +144,7 @@ class _SignUpState extends State<SignUp> {
                             child: Text(
                               'Sign In',
                               style: TextStyle(
-                                color: Colors.blue,
+                                color: GlobalColors.primaryColor,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -139,17 +163,3 @@ class _SignUpState extends State<SignUp> {
   }
 }
 
-// Add your FocusifySignInPage class here
-class FocusifySignInPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Sign In'),
-      ),
-      body: Center(
-        child: Text('This is the Sign In page'),
-      ),
-    );
-  }
-}
