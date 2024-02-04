@@ -2,6 +2,8 @@ import 'package:airecruit/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:airecruit/screens/signup_screen.dart';
+import 'package:airecruit/screens/login_scren.dart';
+
 
 
 void main() {
@@ -13,7 +15,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SignUp(),
+       initialRoute: '/signup', // Set the initial route
+      getPages: [
+        //GetPage(name: '/splash', page: () => SplashScreen()), // Define the SplashScreen route
+        GetPage(name: '/signup', page: () => SignUp()), // Define the SignUp route
+        GetPage(name: '/signin', page: () => Login()), // Define the SignUp route
+
+      ],
     );
   }
 }
+

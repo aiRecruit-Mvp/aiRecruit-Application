@@ -1,5 +1,7 @@
+import 'package:airecruit/screens/login_scren.dart';
 import 'package:airecruit/utils/globalColors.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class SignUp extends StatefulWidget {
   @override
@@ -22,7 +24,8 @@ class _SignUpState extends State<SignUp> {
   }
 
   void _goToSignInPage() {
-    
+    Get.to(Login());
+     
   }
 
   @override
