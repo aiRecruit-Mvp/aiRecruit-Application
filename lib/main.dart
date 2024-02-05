@@ -1,8 +1,8 @@
+import 'package:airecruit/screens/login_scren.dart';
 import 'package:airecruit/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:airecruit/screens/signup_screen.dart';
-
 
 void main() {
   runApp(MyApp());
@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SignUp(),
+      home: Login(),
     );
   }
 }

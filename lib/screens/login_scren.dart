@@ -1,4 +1,6 @@
 import 'package:airecruit/controllers/userController.dart';
+import 'package:airecruit/screens/forgotPassword_scren.dart';
+import 'package:airecruit/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -15,15 +17,18 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-final UserController userController = UserController();
-
+  final UserController userController = UserController();
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text("ai-Recruit"),
+          leading: Image.asset(
+            'images/logo.png', // Replace with the path to your logo image
+            width: 80, // Adjust the width as needed
+            height: 100, // Adjust the height as needed
+          ),
         ),
         body: Center(
           child: Column(
@@ -80,6 +85,27 @@ final UserController userController = UserController();
                     ),
                   ),
                   Text("Remember me"),
+                  SizedBox(
+                    width: 50,
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ForgotPassword()),
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Text(
+                        "Forgot Password?",
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 239, 91, 17),
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
               SizedBox(height: 20),
@@ -114,11 +140,19 @@ final UserController userController = UserController();
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text("Doesn't have an account? "),
-                  Text(
-                    "Sign up",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        color: Color.fromARGB(255, 239, 91, 17)),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SignUp()),
+                      );
+                    },
+                    child: Text(
+                      "Sign up",
+                      style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: Color.fromARGB(255, 239, 91, 17)),
+                    ),
                   ),
                 ],
               ),
