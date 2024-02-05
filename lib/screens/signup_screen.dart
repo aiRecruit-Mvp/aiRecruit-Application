@@ -72,6 +72,10 @@ class _SignUpState extends State<SignUp> {
                         border: OutlineInputBorder(),
                         filled: true,
                         fillColor: Colors.grey[200],
+                        prefixIcon: Icon(
+                         Icons.person,
+                         color: Colors.grey,
+                        ),
                       ),
                     ),
                     SizedBox(height: 24),
@@ -95,6 +99,10 @@ class _SignUpState extends State<SignUp> {
                         border: OutlineInputBorder(),
                         filled: true,
                         fillColor: Colors.grey[200],
+                         prefixIcon: Icon(
+                          Icons.email,
+                          color: Colors.grey,
+                        ),
                       ),
                     ),
                     SizedBox(height: 24),
@@ -118,6 +126,10 @@ class _SignUpState extends State<SignUp> {
                         border: OutlineInputBorder(),
                         filled: true,
                         fillColor: Colors.grey[200],
+                         prefixIcon: Icon(
+                         Icons.lock,
+                         color: Colors.grey,
+                        ),
                       ),
                     ),
                     SizedBox(height: 24),
