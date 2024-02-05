@@ -149,7 +149,45 @@ class _SignUpState extends State<SignUp> {
                     ),
                     SizedBox(height: 24),
                     Center(
-                      child: Row(
+                      
+                      child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                       Text("or"),
+                       SizedBox(height: 20),
+                       OutlinedButton(
+                       onPressed: () {},
+                       child: Row(
+                       mainAxisAlignment: MainAxisAlignment.center,
+                       children: [
+                       Image.asset(
+                         'images/google_icon.png',
+                         height: 24,
+                        ),
+                        SizedBox(width: 8),
+                        Text('Continue with Google'),
+                        ],
+                       ),
+                      ),
+
+                      SizedBox(height: 24),
+
+                       OutlinedButton(
+                       onPressed: () {},
+                       child: Row(
+                       mainAxisAlignment: MainAxisAlignment.center,
+                       children: [
+                       Image.asset(
+                         'images/linkedin-icon.png',
+                         height: 24,
+                        ),
+                        SizedBox(width: 8),
+                        Text('Continue with Linkedin'),
+                        ],
+                       ),
+                      ),
+                      SizedBox(height: 24),
+                         Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text('Already have an account?'),
@@ -166,6 +204,9 @@ class _SignUpState extends State<SignUp> {
                           ),
                         ],
                       ),
+                        ],
+                      )
+                     
                     ),
                   ],
                 ),
