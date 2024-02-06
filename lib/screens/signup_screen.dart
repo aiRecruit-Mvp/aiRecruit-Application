@@ -38,14 +38,21 @@ class _SignUpState extends State<SignUp> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 60),
-              Text(
-                'Join Focusify Today ',
-                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-              ),
-              Text(
-                'Unlock Your Productivity Potential!',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.normal),
-              ),
+             Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                Text(
+                'Join Ai-recruit Today ',
+                 style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: GlobalColors.primaryColor),
+                ),
+                Text(
+                 'Unlock Your Professional Career!',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.normal),
+                 ),
+                 ],
+                ),
+               ),
               SizedBox(height: 48),
               Form(
                 key: _formKey,
@@ -55,6 +62,7 @@ class _SignUpState extends State<SignUp> {
                      Text(
                       'Fullname',
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      
                     ),
                     SizedBox(height: 8),
                     TextFormField(
@@ -89,6 +97,10 @@ class _SignUpState extends State<SignUp> {
                       validator: (value) {
                         if (value!.isEmpty) {
                           return 'Please enter your email';
+                        }
+                        // Check if the entered email is valid using a regular expression
+                        if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                          return 'Please enter a valid email address';
                         }
                         return null;
                       },
