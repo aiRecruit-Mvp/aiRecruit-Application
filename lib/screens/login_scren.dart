@@ -4,6 +4,7 @@ import 'package:airecruit/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:airecruit/screens/profile_page.dart';
 
 void main() {
   runApp(Login());
@@ -116,9 +117,10 @@ class _LoginState extends State<Login> {
                       padding: const EdgeInsets.symmetric(horizontal: 32),
                       child: ElevatedButton(
                         onPressed: () {
-                          userController.loginUser(
-                            emailController.text,
-                            passwordController.text,
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ProfilePage()),
                           );
                         },
                         style: ElevatedButton.styleFrom(
