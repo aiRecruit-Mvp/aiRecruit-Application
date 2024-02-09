@@ -1,8 +1,8 @@
 import 'package:airecruit/screens/login_scren.dart';
-import 'package:airecruit/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:airecruit/screens/signup_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:airecruit/providers/user_provider.dart'; // Import your user provider
+import 'screens/login_scren.dart'; // Import your screens as needed
 
 void main() {
   runApp(MyApp());
@@ -11,9 +11,13 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Login(),
+    return Provider<UserProvider>(
+      create: (_) => UserProvider(),
+      child: MaterialApp(
+        home: Login(),
+      ),
     );
   }
 }
+
+
