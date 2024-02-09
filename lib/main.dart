@@ -1,23 +1,46 @@
-import 'package:airecruit/screens/login_scren.dart';
+import 'package:airecruit/providers/userprovider.dart';
+import 'package:airecruit/screens/home_screen.dart';
+import 'package:airecruit/screens/signup_screen.dart';
+import 'package:airecruit/services/services.dart';
 import 'package:flutter/material.dart';
+
 import 'package:provider/provider.dart';
-import 'package:airecruit/providers/user_provider.dart'; // Import your user provider
-import 'screens/login_scren.dart'; // Import your screens as needed
 
 void main() {
-  runApp(MyApp());
+  runApp(MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create:(_)=>UserProvider())
+      ],
+      child: const MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final AuthService authService = AuthService();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    authService.getUserData(context);
+  }
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return Provider<UserProvider>(
-      create: (_) => UserProvider(),
-      child: MaterialApp(
-        home: Login(),
-      ),
+    return MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+
+        ),
+        home: Provider.of<UserProvider>(context).user.token.isEmpty ?   SignupScreen()
+            : HomeScreen()
+
     );
   }
 }
-
 

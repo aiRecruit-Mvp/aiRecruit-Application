@@ -1,6 +1,6 @@
-import 'package:airecruit/screens/login_scren.dart';
+import 'package:airecruit/screens/login_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:airecruit/screens/login_scren.dart';
+import 'package:airecruit/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 //
 class SplashScreen extends StatefulWidget {
@@ -16,7 +16,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.delayed(Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => Login()),
+        MaterialPageRoute(builder: (context) => LoginScreen()),
       );
     });
   }

@@ -1,30 +1,26 @@
-
 import 'package:flutter/material.dart';
 
 
 import '../services/services.dart';
 import '../utils/custom_textfield.dart';
-import 'login_screen.dart';
 
-class SignupScreen extends StatefulWidget {
-  const SignupScreen({Key? key}) : super(key: key);
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
-  State<SignupScreen> createState() => _SignupScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _SignupScreenState extends State<SignupScreen> {
+class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController nameController = TextEditingController();
   final AuthService authService = AuthService();
 
-  void signupUser() {
-    authService.signUpUser(
+  void loginUser() {
+    authService.signInUser(
       context: context,
       email: emailController.text,
       password: passwordController.text,
-      name: nameController.text,
     );
   }
 
@@ -35,18 +31,10 @@ class _SignupScreenState extends State<SignupScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Text(
-            "Signup",
+            "Login",
             style: TextStyle(fontSize: 30),
           ),
-          SizedBox(height:70),
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 20),
-            child: CustomTextField(
-              controller: nameController,
-              hintText: 'Enter your name',
-            ),
-          ),
-          const SizedBox(height: 20),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.08),
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 20),
             child: CustomTextField(
@@ -64,7 +52,7 @@ class _SignupScreenState extends State<SignupScreen> {
           ),
           const SizedBox(height: 40),
           ElevatedButton(
-            onPressed: signupUser,
+            onPressed: loginUser,
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all(Colors.blue),
               textStyle: MaterialStateProperty.all(
@@ -75,21 +63,9 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
             ),
             child: const Text(
-              "Sign up",
+              "Login",
               style: TextStyle(color: Colors.white, fontSize: 16),
             ),
-          ),
-          SizedBox(height: 50),
-          TextButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const LoginScreen(),
-                ),
-              );
-            },
-            child: const Text('Login User?'),
           ),
         ],
       ),

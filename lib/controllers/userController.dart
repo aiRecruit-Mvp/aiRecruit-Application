@@ -1,4 +1,4 @@
-import 'package:airecruit/models/User.dart';
+import 'package:airecruit/models/user.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
