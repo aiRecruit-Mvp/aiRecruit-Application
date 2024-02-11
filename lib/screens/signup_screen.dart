@@ -59,13 +59,10 @@ class _SignUpState extends State<SignUp> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                     Text(
-                      'Fullname',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                      
-                    ),
+                     
                     SizedBox(height: 8),
                     TextFormField(
+                      
                       keyboardType: TextInputType.emailAddress,
                       validator: (value) {
                         if (value!.isEmpty) {
@@ -77,9 +74,8 @@ class _SignUpState extends State<SignUp> {
                         _fullname = value!;
                       },
                       decoration: InputDecoration(
+                        labelText: "fullname",
                         border: OutlineInputBorder(),
-                        filled: true,
-                        fillColor: Colors.grey[200],
                         prefixIcon: Icon(
                          Icons.person,
                          color: Colors.grey,
@@ -87,10 +83,7 @@ class _SignUpState extends State<SignUp> {
                       ),
                     ),
                     SizedBox(height: 24),
-                    Text(
-                      'Email',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
+                  
                     SizedBox(height: 8),
                     TextFormField(
                       keyboardType: TextInputType.emailAddress,
@@ -108,9 +101,8 @@ class _SignUpState extends State<SignUp> {
                         _email = value!;
                       },
                       decoration: InputDecoration(
+                        labelText: "Email",
                         border: OutlineInputBorder(),
-                        filled: true,
-                        fillColor: Colors.grey[200],
                          prefixIcon: Icon(
                           Icons.email,
                           color: Colors.grey,
@@ -118,10 +110,7 @@ class _SignUpState extends State<SignUp> {
                       ),
                     ),
                     SizedBox(height: 24),
-                    Text(
-                      'Password',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
+                   
                     SizedBox(height: 8),
                     TextFormField(
                       obscureText: true,
@@ -136,8 +125,7 @@ class _SignUpState extends State<SignUp> {
                       },
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
-                        filled: true,
-                        fillColor: Colors.grey[200],
+                        labelText: "password",
                          prefixIcon: Icon(
                          Icons.lock,
                          color: Colors.grey,
@@ -145,6 +133,29 @@ class _SignUpState extends State<SignUp> {
                       ),
                     ),
                     SizedBox(height: 24),
+                      TextFormField(
+                      obscureText: true,
+                      validator: (value) {
+                        if (value! !=_password) {
+                          return 'Your password and confirmation password do not match';
+                        }
+                         if (value!.isEmpty) {
+                          return 'Password must be confirmed';
+                        }
+                        return null;
+                      },
+                     
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: "confirm password",
+                         prefixIcon: Icon(
+                         Icons.lock,
+                         color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 24),
+
                     Center(
                       child: ElevatedButton(
                         onPressed: _submitForm,
@@ -154,7 +165,7 @@ class _SignUpState extends State<SignUp> {
                           onPrimary: Colors.white,
                           padding: EdgeInsets.symmetric(horizontal: 48, vertical: 16),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(30),
                           ),
                         ),
                       ),
