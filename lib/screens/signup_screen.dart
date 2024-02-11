@@ -12,6 +12,8 @@ class _SignUpState extends State<SignUp> {
   String _password = '';
   String _fullname = '';
 
+
+
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
@@ -20,7 +22,7 @@ class _SignUpState extends State<SignUp> {
   }
 
   void _goToSignInPage() {
-    Navigator.pop(context); // Navigate back to the login page
+    
   }
 
   @override
@@ -47,10 +49,9 @@ class _SignUpState extends State<SignUp> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                     Text(
                       'Fullname',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 8),
                     TextFormField(
@@ -73,8 +74,7 @@ class _SignUpState extends State<SignUp> {
                     SizedBox(height: 24),
                     Text(
                       'Email',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 8),
                     TextFormField(
@@ -97,8 +97,7 @@ class _SignUpState extends State<SignUp> {
                     SizedBox(height: 24),
                     Text(
                       'Password',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 8),
                     TextFormField(
@@ -126,8 +125,7 @@ class _SignUpState extends State<SignUp> {
                         style: ElevatedButton.styleFrom(
                           primary: GlobalColors.primaryColor,
                           onPrimary: Colors.white,
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 48, vertical: 16),
+                          padding: EdgeInsets.symmetric(horizontal: 48, vertical: 16),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
@@ -142,8 +140,7 @@ class _SignUpState extends State<SignUp> {
                           Text('Already have an account?'),
                           SizedBox(width: 8),
                           InkWell(
-                            onTap:
-                                _goToSignInPage, // Call the function to navigate to the sign-in page
+                            onTap: _goToSignInPage, // Call the function to navigate to the sign-in page
                             child: Text(
                               'Sign In',
                               style: TextStyle(
@@ -165,3 +162,4 @@ class _SignUpState extends State<SignUp> {
     );
   }
 }
+
