@@ -1,8 +1,6 @@
+import 'package:airecruit/models/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import '../models/user.dart';
-
 
 class UserProvider extends ChangeNotifier {
   User _user = User(id: '', name: '', email: '', token: '', password: '');
@@ -16,6 +14,11 @@ class UserProvider extends ChangeNotifier {
 
   void setUserFromModel(User user) {
     _user = user;
+    notifyListeners();
+  }
+
+  void setPasswordResetEmail(String email) {
+    _user.email = email;
     notifyListeners();
   }
 }
