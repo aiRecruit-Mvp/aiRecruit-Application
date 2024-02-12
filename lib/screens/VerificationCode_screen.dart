@@ -1,18 +1,26 @@
 import 'package:airecruit/screens/ChangePassword_screen.dart';
 import 'package:flutter/material.dart';
+import '../services/Auth.dart';
+import '../utils/custom_textfield.dart';
+import '../utils/globalColors.dart'; // Import global colors
 
-class VerificationCodePage extends StatelessWidget {
-  final TextEditingController verificationCodeController =
-      TextEditingController();
+class VerificationCodeScreen extends StatelessWidget {
+  final String email;
 
-  void _handleVerifyCode(BuildContext context) {
-    // Add logic to handle verification code and navigate to the next step (ChangePasswordPage)
-    // For simplicity, print the verification code for now
-    print("Verification Code entered: ${verificationCodeController.text}");
+  VerificationCodeScreen({required this.email});
 
+  final TextEditingController codeController = TextEditingController();
+  final AuthService authService = AuthService();
+
+  void verifyCode(BuildContext context) {
+    final code = codeController.text;
+    authService.verifyCode(context: context, email: email, code: code);
+    // Navigate to the Change Password screen if verification succeeds
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => ChangePasswordPage()),
+      MaterialPageRoute(
+        builder: (context) => ChangePasswordScreen(),
+      ),
     );
   }
 
@@ -20,7 +28,7 @@ class VerificationCodePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Verification Code"),
+        title: Text('Verification Code'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -28,36 +36,46 @@ class VerificationCodePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              "Enter the verification code sent to your email.",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 20),
-            TextField(
-              controller: verificationCodeController,
-              decoration: InputDecoration(
-                labelText: "Verification Code",
-                border: OutlineInputBorder(),
+              "Verification Code",
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: GlobalColors.secondaryColor,
               ),
             ),
             SizedBox(height: 20),
+            Text(
+              "Enter the verification code sent to $email.",
+              style: TextStyle(
+                fontSize: 16,
+                color: GlobalColors.primaryColor,
+              ),
+            ),
+            SizedBox(height: 20),
+            CustomTextField(
+              controller: codeController,
+              hintText: "Verification Code",
+              keyboardType: TextInputType.number,
+              textInputAction: TextInputAction.done,
+              prefixIcon: Icons.code,
+              iconColor: GlobalColors.primaryColor,
+            ),
+            SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () => _handleVerifyCode(context),
+              onPressed: () => verifyCode(context),
               style: ElevatedButton.styleFrom(
-                primary: Color.fromARGB(255, 239, 91, 17),
+                primary: GlobalColors.buttonColor,
                 onPrimary: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
-                padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
-              ),
-              child: Text(
-                "Verify",
-                style: TextStyle(
+                padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                textStyle: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
               ),
+              child: Text("Verify Code"),
             ),
           ],
         ),

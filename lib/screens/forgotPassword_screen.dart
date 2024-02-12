@@ -1,20 +1,22 @@
 import 'package:airecruit/screens/VerificationCode_screen.dart';
 import 'package:flutter/material.dart';
+import '../services/Auth.dart';
+import '../utils/custom_textfield.dart';
+import '../utils/globalColors.dart'; // Import global colors
 
-class ForgotPassword extends StatefulWidget {
-  @override
-  _ForgotPasswordState createState() => _ForgotPasswordState();
-}
-
-class _ForgotPasswordState extends State<ForgotPassword> {
+class ForgotPasswordScreen extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
+  final AuthService authService = AuthService();
 
-  void _handleResetPassword() {
-    // Add logic to handle password recovery
-    // For simplicity, navigate to the verification code page
+  void submitEmail(BuildContext context) {
+    final email = emailController.text;
+    authService.forgotPassword(context: context, email: email);
+    // Pass the email to the Verification Code screen
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => VerificationCodePage()),
+      MaterialPageRoute(
+        builder: (context) => VerificationCodeScreen(email: email),
+      ),
     );
   }
 
@@ -22,7 +24,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Forgot Password"),
+        title: Text('Forgot Password'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -30,44 +32,46 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              "Forgot Password",
+              "Forgot Your Password?",
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
+                color: GlobalColors.secondaryColor,
               ),
             ),
             SizedBox(height: 20),
             Text(
-              "Enter your email to receive a password reset link.",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 40),
-            TextField(
-              controller: emailController,
-              decoration: InputDecoration(
-                labelText: "Email",
-                border: OutlineInputBorder(),
+              "Enter your email address below to reset your password.",
+              style: TextStyle(
+                fontSize: 16,
+                color: GlobalColors.primaryColor,
               ),
             ),
             SizedBox(height: 20),
+            CustomTextField(
+              controller: emailController,
+              hintText: "Email",
+              keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.done,
+              prefixIcon: Icons.email,
+              iconColor: GlobalColors.primaryColor,
+            ),
+            SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _handleResetPassword,
+              onPressed: () => submitEmail(context),
               style: ElevatedButton.styleFrom(
-                primary: Color.fromARGB(255, 239, 91, 17),
+                primary: GlobalColors.buttonColor,
                 onPrimary: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
-                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
-              ),
-              child: Text(
-                "Reset Password",
-                style: TextStyle(
+                padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                textStyle: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
               ),
+              child: Text("Reset Password"),
             ),
           ],
         ),

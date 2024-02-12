@@ -125,4 +125,99 @@ class AuthService {
         ),
         (route) => false);
   }
+
+  void forgotPassword(
+      {required BuildContext context, required String email}) async {
+    try {
+      var userProvider = Provider.of<UserProvider>(context, listen: false);
+
+      // Set the email in the UserProvider
+      userProvider.setPasswordResetEmail(email);
+
+      http.Response res = await http.post(
+        Uri.parse('${Constants.uri}/forgot_password'),
+        body: jsonEncode({'email': email}),
+        headers: <String, String>{
+          'Content-Type': "application/json; charset=UTF-8",
+        },
+      );
+      httpErrorHandling(
+        response: res,
+        context: context,
+        onSuccess: () {
+          showSnackBar(context, 'Password reset email sent successfully');
+        },
+      );
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
+  }
+
+  void verifyCode(
+      {required BuildContext context,
+      required String code,
+      required String email}) async {
+    try {
+      // Get the email from the UserProvider
+      var userProvider = Provider.of<UserProvider>(context, listen: false);
+
+      email = userProvider.user.email;
+      if (email.isEmpty) {
+        showSnackBar(context, 'Email address not found');
+        return;
+      }
+
+      http.Response res = await http.post(
+        Uri.parse('${Constants.uri}/verify_code'),
+        body: jsonEncode({'email': email, 'code': code}),
+        headers: <String, String>{
+          'Content-Type': "application/json; charset=UTF-8",
+        },
+      );
+      httpErrorHandling(
+        response: res,
+        context: context,
+        onSuccess: () {
+          showSnackBar(context, 'Verification code is valid');
+          // Navigate to change password screen or perform desired action
+        },
+      );
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
+  }
+
+  void changePassword(
+      {required BuildContext context,
+      required String newPassword,
+      required String email}) async {
+    try {
+      // Get the email from the UserProvider
+      var userProvider = Provider.of<UserProvider>(context, listen: false);
+
+      email = userProvider.user.email;
+      if (email.isEmpty) {
+        showSnackBar(context, 'Email address not found');
+        return;
+      }
+
+      http.Response res = await http.post(
+        Uri.parse('${Constants.uri}/reset_password'),
+        body: jsonEncode({'email': email, 'new_password': newPassword}),
+        headers: <String, String>{
+          'Content-Type': "application/json; charset=UTF-8",
+        },
+      );
+      httpErrorHandling(
+        response: res,
+        context: context,
+        onSuccess: () {
+          showSnackBar(context, 'Password successfully changed');
+          // Navigate to login screen or perform desired action
+        },
+      );
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
+  }
 }

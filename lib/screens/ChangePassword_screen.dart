@@ -1,28 +1,47 @@
+import 'package:airecruit/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../services/Auth.dart';
+import '../utils/custom_textfield.dart';
+import '../utils/globalColors.dart'; // Import global colors
+import '../providers/userprovider.dart';
 
-class ChangePasswordPage extends StatefulWidget {
-  @override
-  _ChangePasswordPageState createState() => _ChangePasswordPageState();
-}
-
-class _ChangePasswordPageState extends State<ChangePasswordPage> {
-  final TextEditingController newPasswordController = TextEditingController();
-  final TextEditingController repeatPasswordController =
+class ChangePasswordScreen extends StatelessWidget {
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
       TextEditingController();
-  bool showNewPassword = false;
-  bool showRepeatPassword = false;
+  final AuthService authService = AuthService();
 
-  void _handleChangePassword() {
-    // Add logic to handle changing the password
-    // For simplicity, print the new password for now
-    print("New Password: ${newPasswordController.text}");
+  void changePassword(BuildContext context) {
+    final newPassword = passwordController.text;
+    final confirmPassword = confirmPasswordController.text;
+
+    if (newPassword != confirmPassword) {
+      showSnackBar(context, 'Passwords do not match');
+      return;
+    }
+
+    // Get the email from the UserProvider
+    var userProvider = Provider.of<UserProvider>(context, listen: false);
+    final email = userProvider.user.email;
+
+    if (email.isEmpty) {
+      showSnackBar(context, 'Email address not found');
+      return;
+    }
+
+    authService.changePassword(
+      context: context,
+      email: email,
+      newPassword: newPassword,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Change Password"),
+        title: Text('Change Password'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -30,70 +49,47 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              "Enter your new password.",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 20),
-            TextField(
-              controller: newPasswordController,
-              obscureText: !showNewPassword,
-              decoration: InputDecoration(
-                labelText: "New Password",
-                border: OutlineInputBorder(),
-                suffixIcon: IconButton(
-                  onPressed: () {
-                    setState(() {
-                      showNewPassword = !showNewPassword;
-                    });
-                  },
-                  icon: Icon(
-                    showNewPassword ? Icons.visibility : Icons.visibility_off,
-                    color: Color.fromARGB(255, 239, 91, 17),
-                  ),
-                ),
+              "Change Your Password",
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: GlobalColors.secondaryColor,
               ),
             ),
             SizedBox(height: 20),
-            TextField(
-              controller: repeatPasswordController,
-              obscureText: !showRepeatPassword,
-              decoration: InputDecoration(
-                labelText: "Repeat Password",
-                border: OutlineInputBorder(),
-                suffixIcon: IconButton(
-                  onPressed: () {
-                    setState(() {
-                      showRepeatPassword = !showRepeatPassword;
-                    });
-                  },
-                  icon: Icon(
-                    showRepeatPassword
-                        ? Icons.visibility
-                        : Icons.visibility_off,
-                    color: Color.fromARGB(255, 239, 91, 17),
-                  ),
-                ),
-              ),
+            CustomTextField(
+              controller: passwordController,
+              hintText: "New Password",
+              obscureText: true,
+              textInputAction: TextInputAction.next,
+              prefixIcon: Icons.lock,
+              iconColor: GlobalColors.primaryColor,
+            ),
+            SizedBox(height: 20),
+            CustomTextField(
+              controller: confirmPasswordController,
+              hintText: "Confirm Password",
+              obscureText: true,
+              textInputAction: TextInputAction.done,
+              prefixIcon: Icons.lock,
+              iconColor: GlobalColors.primaryColor,
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _handleChangePassword,
+              onPressed: () => changePassword(context),
               style: ElevatedButton.styleFrom(
-                primary: Color.fromARGB(255, 239, 91, 17),
+                primary: GlobalColors.buttonColor,
                 onPrimary: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
-                padding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-              ),
-              child: Text(
-                "Change Password",
-                style: TextStyle(
+                padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                textStyle: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
               ),
+              child: Text("Change Password"),
             ),
           ],
         ),

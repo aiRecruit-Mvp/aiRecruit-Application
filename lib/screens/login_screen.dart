@@ -1,6 +1,6 @@
-import 'package:flutter/cupertino.dart';
+// import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:airecruit/screens/profile_page.dart';
+// import 'package:airecruit/screens/profile_page.dart';
 import 'package:airecruit/screens/signup_screen.dart';
 import 'package:airecruit/screens/forgotPassword_screen.dart';
 import 'package:flutter/services.dart';
@@ -44,126 +44,144 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         centerTitle: true,
         elevation: 0,
-       // backgroundColor: GlobalColors.primaryColor,
+        // backgroundColor: GlobalColors.primaryColor,
       ),
       body: SingleChildScrollView(
-    child: Padding(
-    padding: const EdgeInsets.all(16.0),
-    child: ConstrainedBox( // Use ConstrainedBox to provide bounded height constraints
-    constraints: BoxConstraints(
-    minHeight: MediaQuery.of(context).size.height, // Min height to the size of the screen
-    ),
-    child: IntrinsicHeight( // Make sure the Column's height is bounded
-    child: Column(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      SizedBox(height: 20),
-                Text(
-                  "Welcome Back!",
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: GlobalColors.secondaryColor,
-                  ),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  "Let's sign you in.",
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: GlobalColors.primaryColor,
-                  ),
-                ),
-                SizedBox(height: 48),
-                CustomTextField(
-                  controller: emailController,
-                  hintText: "Email",
-                  keyboardType: TextInputType.emailAddress,
-                  textInputAction: TextInputAction.next,
-                  prefixIcon: Icons.email,
-                  iconColor: GlobalColors.primaryColor,
-                ),
-                SizedBox(height: 16),
-                CustomTextField(
-                  controller: passwordController,
-                  hintText: "Password",
-                  obscureText: _obscureText,
-                  textInputAction: TextInputAction.done,
-                  prefixIcon: Icons.lock,
-                  iconColor: GlobalColors.primaryColor,
-                  suffixIcon: IconButton(
-                    icon: Icon(_obscureText ? Icons.visibility : Icons.visibility_off),
-                    onPressed: () {
-                      setState(() {
-                        _obscureText = !_obscureText;
-                      });
-                    },
-                  ),
-                ),
-                SizedBox(height: 16),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => ForgotPassword()));
-                    },
-                    child: Text(
-                      "Forgot Password?",
-                      style: TextStyle(color: GlobalColors.linkColor),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: ConstrainedBox(
+            // Use ConstrainedBox to provide bounded height constraints
+            constraints: BoxConstraints(
+              minHeight: MediaQuery.of(context)
+                  .size
+                  .height, // Min height to the size of the screen
+            ),
+            child: IntrinsicHeight(
+              // Make sure the Column's height is bounded
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: 20),
+                  Text(
+                    "Welcome Back!",
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: GlobalColors.secondaryColor,
                     ),
                   ),
-                ),
-                SizedBox(height: 24),
-                ElevatedButton(
-                  onPressed: loginUser,
-                  style: ElevatedButton.styleFrom(
-                    primary: GlobalColors.buttonColor,
-                    onPrimary: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-                    padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                    textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  SizedBox(height: 8),
+                  Text(
+                    "Let's sign you in.",
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: GlobalColors.primaryColor,
+                    ),
                   ),
-                  child: Text("Log in"),
-                ),
-                SizedBox(height: 32),
-      Text("Don't have an account? "),
-      TextButton(
-        onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => SignupScreen()));
-        },
-        child: Text("Sign up", style: TextStyle(fontWeight: FontWeight.bold, color: GlobalColors.linkColor)), // Use global link color
-      ),
-                Text("or continue with"),
-                SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SocialIconButton(
-                      icon: Icons.facebook,
+                  SizedBox(height: 48),
+                  CustomTextField(
+                    controller: emailController,
+                    hintText: "Email",
+                    keyboardType: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.next,
+                    prefixIcon: Icons.email,
+                    iconColor: GlobalColors.primaryColor,
+                  ),
+                  SizedBox(height: 16),
+                  CustomTextField(
+                    controller: passwordController,
+                    hintText: "Password",
+                    obscureText: _obscureText,
+                    textInputAction: TextInputAction.done,
+                    prefixIcon: Icons.lock,
+                    iconColor: GlobalColors.primaryColor,
+                    suffixIcon: IconButton(
+                      icon: Icon(_obscureText
+                          ? Icons.visibility
+                          : Icons.visibility_off),
                       onPressed: () {
-                        // Facebook login logic
+                        setState(() {
+                          _obscureText = !_obscureText;
+                        });
                       },
-                      color: GlobalColors.buttonColor,
                     ),
-                    SizedBox(width: 16),
-                    SocialIconButton(
-                      icon: Icons.g_translate,
+                  ),
+                  SizedBox(height: 16),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
                       onPressed: () {
-                        // Google login logic
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ForgotPasswordScreen()));
                       },
-                      color: GlobalColors.buttonColor,
+                      child: Text(
+                        "Forgot Password?",
+                        style: TextStyle(color: GlobalColors.linkColor),
+                      ),
                     ),
-                  ],
-                ),
-                Spacer(),
-              ],
+                  ),
+                  SizedBox(height: 24),
+                  ElevatedButton(
+                    onPressed: loginUser,
+                    style: ElevatedButton.styleFrom(
+                      primary: GlobalColors.buttonColor,
+                      onPrimary: Colors.white,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30)),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                      textStyle:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    child: Text("Log in"),
+                  ),
+                  SizedBox(height: 32),
+                  Text("Don't have an account? "),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SignupScreen()));
+                    },
+                    child: Text("Sign up",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: GlobalColors
+                                .linkColor)), // Use global link color
+                  ),
+                  Text("or continue with"),
+                  SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SocialIconButton(
+                        icon: Icons.facebook,
+                        onPressed: () {
+                          // Facebook login logic
+                        },
+                        color: GlobalColors.buttonColor,
+                      ),
+                      SizedBox(width: 16),
+                      SocialIconButton(
+                        icon: Icons.g_translate,
+                        onPressed: () {
+                          // Google login logic
+                        },
+                        color: GlobalColors.buttonColor,
+                      ),
+                    ],
+                  ),
+                  Spacer(),
+                ],
+              ),
             ),
           ),
         ),
       ),
-      ),
     );
-
   }
 }
 
