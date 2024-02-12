@@ -18,9 +18,15 @@ class _SignUpState extends State<SignUp> {
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
+    //  _formKey.currentState!.save();
       // Perform sign up logic here
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text("Saisissez ici quelque chose à afficher sur le snack-bar")));
     }
+    print(_email);
+    print(_password);
+    print(_fullname);
+
   }
 
   void _goToSignInPage() {
@@ -70,9 +76,11 @@ class _SignUpState extends State<SignUp> {
                         }
                         return null;
                       },
-                      onSaved: (value) {
-                        _fullname = value!;
-                      },
+                      onChanged: (value) {
+                      setState(() {
+                      _fullname = value;
+                      });
+                     },
                       decoration: InputDecoration(
                         labelText: "fullname",
                         border: OutlineInputBorder(),
@@ -97,8 +105,10 @@ class _SignUpState extends State<SignUp> {
                         }
                         return null;
                       },
-                      onSaved: (value) {
-                        _email = value!;
+                     onChanged: (value) {
+                       setState(() {
+                        _email = value;
+                      });
                       },
                       decoration: InputDecoration(
                         labelText: "Email",
@@ -120,9 +130,11 @@ class _SignUpState extends State<SignUp> {
                         }
                         return null;
                       },
-                      onSaved: (value) {
-                        _password = value!;
-                      },
+                        onChanged: (value) {
+                        setState(() {
+                       _password = value;
+                        });
+                     },
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: "password",
@@ -136,7 +148,7 @@ class _SignUpState extends State<SignUp> {
                       TextFormField(
                       obscureText: true,
                       validator: (value) {
-                        if (value! !=_password) {
+                        if (value! != _password) {
                           return 'Your password and confirmation password do not match';
                         }
                          if (value!.isEmpty) {
@@ -176,39 +188,6 @@ class _SignUpState extends State<SignUp> {
                       child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                       Text("or"),
-                       SizedBox(height: 20),
-                       OutlinedButton(
-                       onPressed: () {},
-                       child: Row(
-                       mainAxisAlignment: MainAxisAlignment.center,
-                       children: [
-                       Image.asset(
-                         'images/google_icon.png',
-                         height: 24,
-                        ),
-                        SizedBox(width: 8),
-                        Text('Continue with Google'),
-                        ],
-                       ),
-                      ),
-
-                      SizedBox(height: 24),
-
-                       OutlinedButton(
-                       onPressed: () {},
-                       child: Row(
-                       mainAxisAlignment: MainAxisAlignment.center,
-                       children: [
-                       Image.asset(
-                         'images/linkedin-icon.png',
-                         height: 24,
-                        ),
-                        SizedBox(width: 8),
-                        Text('Continue with Linkedin'),
-                        ],
-                       ),
-                      ),
                       SizedBox(height: 24),
                          Row(
                         mainAxisAlignment: MainAxisAlignment.center,
