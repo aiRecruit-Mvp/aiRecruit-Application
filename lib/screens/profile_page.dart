@@ -18,7 +18,7 @@ class ProfilePage extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 60,
-                backgroundImage: AssetImage('images/profile_image.jpg'),
+                backgroundImage: AssetImage('Assets/profile_image.jpg'),
               ),
               SizedBox(height: 16),
               Text(

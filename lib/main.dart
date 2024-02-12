@@ -1,7 +1,7 @@
 import 'package:airecruit/providers/userprovider.dart';
 import 'package:airecruit/screens/home_screen.dart';
 import 'package:airecruit/screens/signup_screen.dart';
-import 'package:airecruit/services/services.dart';
+import 'package:airecruit/services/Auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';

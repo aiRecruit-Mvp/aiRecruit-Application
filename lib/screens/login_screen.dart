@@ -1,8 +1,12 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-
-import '../services/services.dart';
+import 'package:airecruit/screens/profile_page.dart';
+import 'package:airecruit/screens/signup_screen.dart';
+import 'package:airecruit/screens/forgotPassword_screen.dart';
+import 'package:flutter/services.dart';
+import '../services/Auth.dart';
 import '../utils/custom_textfield.dart';
+import '../utils/globalColors.dart'; // Import global colors
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -14,6 +18,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  bool _obscureText = true; // For toggling password visibility
   final AuthService authService = AuthService();
 
   void loginUser() {
@@ -26,49 +31,160 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Change status bar color to match the AppBar (optional)
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: GlobalColors.primaryColor,
+    ));
+
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text(
-            "Login",
-            style: TextStyle(fontSize: 30),
-          ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.08),
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 20),
-            child: CustomTextField(
-              controller: emailController,
-              hintText: 'Enter your email',
-            ),
-          ),
-          const SizedBox(height: 20),
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 20),
-            child: CustomTextField(
-              controller: passwordController,
-              hintText: 'Enter your password',
-            ),
-          ),
-          const SizedBox(height: 40),
-          ElevatedButton(
-            onPressed: loginUser,
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(Colors.blue),
-              textStyle: MaterialStateProperty.all(
-                const TextStyle(color: Colors.white),
-              ),
-              minimumSize: MaterialStateProperty.all(
-                Size(MediaQuery.of(context).size.width / 2.5, 50),
-              ),
-            ),
-            child: const Text(
-              "Login",
-              style: TextStyle(color: Colors.white, fontSize: 16),
-            ),
-          ),
-        ],
+      appBar: AppBar(
+        title: Image.asset(
+          'Assets/logo.png',
+          height: 60.0,
+        ),
+        centerTitle: true,
+        elevation: 0,
+       // backgroundColor: GlobalColors.primaryColor,
       ),
+      body: SingleChildScrollView(
+    child: Padding(
+    padding: const EdgeInsets.all(16.0),
+    child: ConstrainedBox( // Use ConstrainedBox to provide bounded height constraints
+    constraints: BoxConstraints(
+    minHeight: MediaQuery.of(context).size.height, // Min height to the size of the screen
+    ),
+    child: IntrinsicHeight( // Make sure the Column's height is bounded
+    child: Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      SizedBox(height: 20),
+                Text(
+                  "Welcome Back!",
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: GlobalColors.secondaryColor,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  "Let's sign you in.",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: GlobalColors.primaryColor,
+                  ),
+                ),
+                SizedBox(height: 48),
+                CustomTextField(
+                  controller: emailController,
+                  hintText: "Email",
+                  keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
+                  prefixIcon: Icons.email,
+                  iconColor: GlobalColors.primaryColor,
+                ),
+                SizedBox(height: 16),
+                CustomTextField(
+                  controller: passwordController,
+                  hintText: "Password",
+                  obscureText: _obscureText,
+                  textInputAction: TextInputAction.done,
+                  prefixIcon: Icons.lock,
+                  iconColor: GlobalColors.primaryColor,
+                  suffixIcon: IconButton(
+                    icon: Icon(_obscureText ? Icons.visibility : Icons.visibility_off),
+                    onPressed: () {
+                      setState(() {
+                        _obscureText = !_obscureText;
+                      });
+                    },
+                  ),
+                ),
+                SizedBox(height: 16),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => ForgotPassword()));
+                    },
+                    child: Text(
+                      "Forgot Password?",
+                      style: TextStyle(color: GlobalColors.linkColor),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: loginUser,
+                  style: ElevatedButton.styleFrom(
+                    primary: GlobalColors.buttonColor,
+                    onPrimary: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                    padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                    textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  child: Text("Log in"),
+                ),
+                SizedBox(height: 32),
+      Text("Don't have an account? "),
+      TextButton(
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => SignupScreen()));
+        },
+        child: Text("Sign up", style: TextStyle(fontWeight: FontWeight.bold, color: GlobalColors.linkColor)), // Use global link color
+      ),
+                Text("or continue with"),
+                SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SocialIconButton(
+                      icon: Icons.facebook,
+                      onPressed: () {
+                        // Facebook login logic
+                      },
+                      color: GlobalColors.buttonColor,
+                    ),
+                    SizedBox(width: 16),
+                    SocialIconButton(
+                      icon: Icons.g_translate,
+                      onPressed: () {
+                        // Google login logic
+                      },
+                      color: GlobalColors.buttonColor,
+                    ),
+                  ],
+                ),
+                Spacer(),
+              ],
+            ),
+          ),
+        ),
+      ),
+      ),
+    );
+
+  }
+}
+
+class SocialIconButton extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onPressed;
+  final Color color;
+
+  const SocialIconButton({
+    Key? key,
+    required this.icon,
+    required this.onPressed,
+    required this.color,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: Icon(icon, size: 30),
+      color: color,
+      onPressed: onPressed,
     );
   }
 }

@@ -65,6 +65,7 @@ class AuthService {
           userProvider.setUser(jsonDecode(res.body)); // Pass decoded JSON map
 
           await prefs.setString('x-auth-token', jsonDecode(res.body)['token']);
+
           navigator.pushAndRemoveUntil(
               MaterialPageRoute(
                 builder: (context) => const HomeScreen(),
