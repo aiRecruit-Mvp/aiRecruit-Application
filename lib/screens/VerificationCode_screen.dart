@@ -1,20 +1,18 @@
-import 'package:airecruit/screens/VerificationCode_scren.dart';
+import 'package:airecruit/screens/ChangePassword_screen.dart';
 import 'package:flutter/material.dart';
 
-class ForgotPassword extends StatefulWidget {
-  @override
-  _ForgotPasswordState createState() => _ForgotPasswordState();
-}
+class VerificationCodePage extends StatelessWidget {
+  final TextEditingController verificationCodeController =
+      TextEditingController();
 
-class _ForgotPasswordState extends State<ForgotPassword> {
-  final TextEditingController emailController = TextEditingController();
+  void _handleVerifyCode(BuildContext context) {
+    // Add logic to handle verification code and navigate to the next step (ChangePasswordPage)
+    // For simplicity, print the verification code for now
+    print("Verification Code entered: ${verificationCodeController.text}");
 
-  void _handleResetPassword() {
-    // Add logic to handle password recovery
-    // For simplicity, navigate to the verification code page
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => VerificationCodePage()),
+      MaterialPageRoute(builder: (context) => ChangePasswordPage()),
     );
   }
 
@@ -22,7 +20,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Forgot Password"),
+        title: Text("Verification Code"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -30,39 +28,31 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              "Forgot Password",
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 20),
-            Text(
-              "Enter your email to receive a password reset link.",
+              "Enter the verification code sent to your email.",
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 18),
             ),
-            SizedBox(height: 40),
+            SizedBox(height: 20),
             TextField(
-              controller: emailController,
+              controller: verificationCodeController,
               decoration: InputDecoration(
-                labelText: "Email",
+                labelText: "Verification Code",
                 border: OutlineInputBorder(),
               ),
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _handleResetPassword,
+              onPressed: () => _handleVerifyCode(context),
               style: ElevatedButton.styleFrom(
                 primary: Color.fromARGB(255, 239, 91, 17),
                 onPrimary: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
-                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+                padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
               ),
               child: Text(
-                "Reset Password",
+                "Verify",
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,

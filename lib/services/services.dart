@@ -23,8 +23,7 @@ class AuthService {
       User user =
           User(id: '', name: name, email: email, token: '', password: password);
 
-      http.Response res = await http.post(
-          Uri.parse('${Constants.uri}/signup'),
+      http.Response res = await http.post(Uri.parse('${Constants.uri}/signup'),
           // Method 1
           body: user.toJson(),
           headers: <String, String>{
@@ -62,7 +61,6 @@ class AuthService {
         context: context,
         onSuccess: () async {
           SharedPreferences prefs = await SharedPreferences.getInstance();
-
 
           userProvider.setUser(jsonDecode(res.body)); // Pass decoded JSON map
 
@@ -105,7 +103,6 @@ class AuthService {
           },
         );
         userProvider.setUser(jsonDecode(userRes.body)); // Pass decoded JSON map
-
       }
     } catch (e) {
       showSnackBar(context, e.toString());

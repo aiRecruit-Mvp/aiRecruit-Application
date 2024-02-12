@@ -41,7 +41,7 @@ class User {
       name: json['user']['name'] ?? '',
       email: json['user']['email'] ?? '',
       token: json['token'] ?? '',
-      password: json['password'] ?? '',
+      password: json['user']['password'] ?? '',
     );
   }
 }
