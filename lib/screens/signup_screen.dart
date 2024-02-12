@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import '../services/Auth.dart';
 import '../utils/custom_textfield.dart';
 import '../utils/globalColors.dart'; // Assuming this contains your color scheme
@@ -16,14 +19,32 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
   final AuthService authService = AuthService();
+  File? _image;
 
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
+  }
   void signupUser() {
-    authService.signUpUser(
-      context: context,
-      email: emailController.text,
-      password: passwordController.text,
-      name: nameController.text,
-    );
+    if (_image != null) {
+      authService.signUpUser(
+        context: context,
+        email: emailController.text,
+        password: passwordController.text,
+        name: nameController.text,
+        imageFile: _image!,  // Pass the selected image file
+      );
+    } else {
+      // Handle the case when an image is not selected
+      // For example, show a snackbar message
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please select an image.')));
+    }
   }
 
   @override
@@ -74,6 +95,23 @@ class _SignupScreenState extends State<SignupScreen> {
               CustomTextField(
                 controller: passwordController,
                 hintText: 'Enter your password',
+              ),
+              SizedBox(height: 24),
+              // Add a widget to show the selected image or a placeholder
+              Center(
+                child: GestureDetector(
+                  onTap: _pickImage,
+                  child: _image != null
+                      ? CircleAvatar(
+                    radius: 60,
+                    backgroundImage: FileImage(_image!),
+                  )
+                      : CircleAvatar(
+                    radius: 60,
+                    backgroundColor: Colors.grey.shade200,
+                    child: Icon(Icons.camera_alt, color: Colors.grey.shade800),
+                  ),
+                ),
               ),
               SizedBox(height: 24),
               Center(

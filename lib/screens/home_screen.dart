@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -30,10 +32,7 @@ class HomeScreen extends StatelessWidget {
               accountEmail: Text(user.email),
               currentAccountPicture: CircleAvatar(
                 backgroundColor: Colors.orange,
-                child: Text(
-                  user.name[0], // Display the first letter of the username
-                  style: TextStyle(fontSize: 40.0),
-                ),
+                backgroundImage: NetworkImage(user.profilePicturePath), // Use FileImage for local files
               ),
             ),
             ListTile(

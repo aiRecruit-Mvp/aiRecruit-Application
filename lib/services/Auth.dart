@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:path/path.dart';
 import '../models/user.dart';
 import '../providers/userprovider.dart';
 import '../screens/home_screen.dart';
@@ -13,29 +15,32 @@ import '../utils/constants.dart';
 import '../utils/utils.dart';
 
 class AuthService {
+
   void signUpUser({
     required BuildContext context,
     required String email,
     required String name,
     required String password,
+    required File imageFile, // Add an argument for the image file
   }) async {
     try {
-      User user =
-          User(id: '', name: name, email: email, token: '', password: password);
+      Uri uri = Uri.parse('${Constants.uri}/signup');
+      http.MultipartRequest request = http.MultipartRequest('POST', uri)
+        ..fields['email'] = email
+        ..fields['name'] = name
+        ..fields['password'] = password
+        ..files.add(await http.MultipartFile.fromPath(
+          'file', // This 'file' key must match the key expected on the server
+          imageFile.path,
+          contentType: MediaType('image', basename(imageFile.path).split('.').last),
+        ));
 
-      http.Response res = await http.post(Uri.parse('${Constants.uri}/signup'),
-          // Method 1
-          body: user.toJson(),
-          headers: <String, String>{
-            'Content-Type': "application/json; charset=UTF-8"
-          });
-      httpErrorHandling(
-          response: res,
-          context: context,
-          onSuccess: () {
-            showSnackBar(
-                context, 'Account created login with the same credentials');
-          });
+      http.StreamedResponse res = await request.send();
+
+      if (res.statusCode == 201) {
+        // Handle success
+        showSnackBar(context, 'Account created login with the same credentials');
+      }
     } catch (e) {
       showSnackBar(context, e.toString());
     }
