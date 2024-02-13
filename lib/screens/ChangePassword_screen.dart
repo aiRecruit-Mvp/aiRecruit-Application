@@ -1,3 +1,4 @@
+import 'package:airecruit/screens/login_screen.dart';
 import 'package:airecruit/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -9,7 +10,7 @@ import '../providers/userprovider.dart';
 class ChangePasswordScreen extends StatelessWidget {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
-      TextEditingController();
+  TextEditingController();
   final AuthService authService = AuthService();
 
   void changePassword(BuildContext context) {
@@ -34,6 +35,12 @@ class ChangePasswordScreen extends StatelessWidget {
       context: context,
       email: email,
       newPassword: newPassword,
+    );
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LoginScreen(),
+      ),
     );
   }
 

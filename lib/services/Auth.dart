@@ -21,7 +21,7 @@ class AuthService {
     required String email,
     required String name,
     required String password,
-    required File imageFile, // Add an argument for the image file
+    required File imageFile, // Ensure this is the File from dart:io
   }) async {
     try {
       Uri uri = Uri.parse('${Constants.uri}/signup');
@@ -29,10 +29,11 @@ class AuthService {
         ..fields['email'] = email
         ..fields['name'] = name
         ..fields['password'] = password
+
         ..files.add(await http.MultipartFile.fromPath(
-          'file', // This 'file' key must match the key expected on the server
+          'file',
           imageFile.path,
-          contentType: MediaType('image', basename(imageFile.path).split('.').last),
+          contentType: MediaType('file', basename(imageFile.path).split('.').last),
         ));
 
       http.StreamedResponse res = await request.send();
@@ -40,6 +41,9 @@ class AuthService {
       if (res.statusCode == 201) {
         // Handle success
         showSnackBar(context, 'Account created login with the same credentials');
+      } else {
+        // Handle error
+        showSnackBar(context, 'Failed to create account');
       }
     } catch (e) {
       showSnackBar(context, e.toString());
@@ -153,10 +157,10 @@ class AuthService {
     }
   }
 
-  void verifyCode(
+  Future<int> verifyCode(
       {required BuildContext context,
-      required String code,
-      required String email}) async {
+        required String code,
+        required String email}) async {
     try {
       // Get the email from the UserProvider
       var userProvider = Provider.of<UserProvider>(context, listen: false);
@@ -164,7 +168,7 @@ class AuthService {
       email = userProvider.user.email;
       if (email.isEmpty) {
         showSnackBar(context, 'Email address not found');
-        return;
+        return 400; // Return 400 if email is empty
       }
 
       http.Response res = await http.post(
@@ -174,16 +178,16 @@ class AuthService {
           'Content-Type': "application/json; charset=UTF-8",
         },
       );
-      httpErrorHandling(
-        response: res,
-        context: context,
-        onSuccess: () {
-          showSnackBar(context, 'Verification code is valid');
-          // Navigate to change password screen or perform desired action
-        },
-      );
+
+      if (res.statusCode == 200) {
+        showSnackBar(context, 'Verification code is valid');
+        return 200; // Return 200 if verification is successful
+      } else {
+        return 400; // Return 400 if verification fails
+      }
     } catch (e) {
       showSnackBar(context, e.toString());
+      return 400; // Return 400 if an error occurs
     }
   }
 

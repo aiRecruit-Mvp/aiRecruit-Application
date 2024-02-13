@@ -12,16 +12,35 @@ class VerificationCodeScreen extends StatelessWidget {
   final TextEditingController codeController = TextEditingController();
   final AuthService authService = AuthService();
 
-  void verifyCode(BuildContext context) {
+  void verifyCode(BuildContext context) async {
     final code = codeController.text;
-    authService.verifyCode(context: context, email: email, code: code);
-    // Navigate to the Change Password screen if verification succeeds
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ChangePasswordScreen(),
-      ),
-    );
+    final result = await authService.verifyCode(
+        context: context, email: email, code: code);
+    if (result == 200) {
+      // Navigate to the Change Password screen if verification succeeds
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ChangePasswordScreen(),
+        ),
+      );
+    } else {
+      // Handle verification failure (e.g., show an error message)
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text("Verification Failed"),
+          content:
+          Text("The verification code is incorrect. Please try again."),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text("OK"),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   @override
