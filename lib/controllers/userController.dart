@@ -13,7 +13,7 @@ class UserController extends ChangeNotifier {
   Future<void> signupUser(
       String username, String email, String password) async {
     final response = await http.post(
-      Uri.parse('http://192.168.33.1:5000/signup'),
+      Uri.parse('http://192.168.1.147/signup'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'username': username,
