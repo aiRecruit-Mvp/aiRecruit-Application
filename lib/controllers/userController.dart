@@ -34,10 +34,10 @@ class UserController extends ChangeNotifier {
 
 
 
-Future<void> signupUser(String username, String email, String password) async {
+/*Future<void> signupUser(String username, String email, String password) async {
   try {
     // URL
-    Uri addUri = Uri.parse("http://127.0.0.1:5000/signup");
+    Uri addUri = Uri.parse("http://192.168.1.141:5000/signup");
 
     // Data à envoyer
     Map<String, dynamic> userObject = {
@@ -67,6 +67,26 @@ Future<void> signupUser(String username, String email, String password) async {
     print("Une erreur s'est produite lors de la tentative d'inscription : $e");
   }
 }
+*/
+  Future<void> signupUser(
+      String username, String email, String password) async {
+    final response = await http.post(
+      Uri.parse('http://192.168.1.141:5000/signup'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'username': username,
+        'email': email,
+        'password': password,
+      }),
+    );
 
+    if (response.statusCode == 200) {
+      print('User signup successful');
+      // You may update the UI or perform other actions on successful signup
+    } else {
+      print('Error: ${response.statusCode}');
+      // Handle signup failure
+    }
+  }
 
 }

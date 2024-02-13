@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         //GetPage(name: '/splash', page: () => SplashScreen()), // Define the SplashScreen route
         GetPage(name: '/signup', page: () => SignUp()), // Define the SignUp route
         GetPage(name: '/signin', page: () => Login()), // Define the SignUp route
-        GetPage(name: '/otp', page: () => Otp()), // Define the SignUp route
+       // GetPage(name: '/otp', page: () => Otp()), // Define the SignUp route
 
 
       ],

@@ -1,4 +1,4 @@
-import 'package:airecruit/utils/globalColors.dart';
+/*import 'package:airecruit/utils/globalColors.dart';
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 
@@ -109,3 +109,4 @@ class _Otp extends State<Otp> {
     );
   }
 }
+*/
