@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-       initialRoute: '/otp', // Set the initial route
+       initialRoute: '/signup', // Set the initial route
       getPages: [
         //GetPage(name: '/splash', page: () => SplashScreen()), // Define the SplashScreen route
         GetPage(name: '/signup', page: () => SignUp()), // Define the SignUp route

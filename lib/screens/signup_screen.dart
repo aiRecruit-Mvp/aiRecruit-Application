@@ -2,7 +2,7 @@ import 'package:airecruit/screens/login_scren.dart';
 import 'package:airecruit/utils/globalColors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import 'package:airecruit/controllers/userController.dart';
 class SignUp extends StatefulWidget {
   @override
   _SignUpState createState() => _SignUpState();
@@ -13,20 +13,21 @@ class _SignUpState extends State<SignUp> {
   String _email = '';
   String _password = '';
   String _fullname = '';
-
+final UserController userController = UserController();
 
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
     //  _formKey.currentState!.save();
       // Perform sign up logic here
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      content: Text("Saisissez ici quelque chose à afficher sur le snack-bar")));
+      //ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      //content: Text("jawek behi chof code PIN fil mail mtaaek")));
+         print(_email);
+         print(_password);
+         print(_fullname);
+         
+         userController.signupUser(_fullname, _email,_password);
     }
-    print(_email);
-    print(_password);
-    print(_fullname);
-
   }
 
   void _goToSignInPage() {
