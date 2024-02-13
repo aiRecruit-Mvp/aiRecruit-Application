@@ -1,9 +1,14 @@
 import 'package:airecruit/controllers/userController.dart';
+import 'package:airecruit/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
+import 'package:airecruit/screens/signup_screen.dart';
+import 'package:airecruit/utils/globalColors.dart';
+
 
 void main() {
   runApp(Login());
@@ -22,6 +27,11 @@ class _LoginState extends State<Login> {
       clientId:
       '104792978938-8osg03385fiif0h9n084j2raadlacgsv.apps.googleusercontent.com',
       scopes: ['email']);
+
+      void _goToSignUpPage() {
+    Get.to(SignUp());
+     
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -121,12 +131,16 @@ class _LoginState extends State<Login> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text("Doesn't have an account? "),
-                    Text(
-                      "Sign up",
-                      style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          color: Color.fromARGB(255, 239, 91, 17)),
-                    ),
+                     InkWell(
+                        onTap: _goToSignUpPage, // Call the function to navigate to the sign-in page
+                        child: Text(
+                            'Sign Up',
+                             style: TextStyle(
+                             color: GlobalColors.primaryColor,
+                             fontWeight: FontWeight.bold,
+                             ),
+                            ),
+                      ),
                   ],
                 ),
                 SizedBox(height: 20),

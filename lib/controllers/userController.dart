@@ -10,27 +10,31 @@ class UserController extends ChangeNotifier {
   User? get currentUser => _currentUser;
   List<User> get users => _users;
 
-  Future<void> signupUser(
-      String username, String email, String password) async {
+   Future<void> signupUser(
+    String username, String email, String password) async {
+  try {
     final response = await http.post(
-      Uri.parse('http://192.168.33.1:5000/signup'),
+      Uri.parse('http://172.16.1.94:5000/signup'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'username': username,
         'email': email,
-        'pwd': password,
+        'password': password,
       }),
     );
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 201) {
       print('User signup successful');
       // You may update the UI or perform other actions on successful signup
     } else {
       print('Error: ${response.statusCode}');
       // Handle signup failure
     }
+  } catch (e) {
+    print('Error during signup: $e');
+    // Handle network or other exceptions
   }
-
+}
   Future<void> loginUser(String username, String password) async {
     final response = await http.get(
       Uri.parse('http://192.168.33.1:5000/signin/$username/$password'),
