@@ -1,4 +1,4 @@
-import 'package:airecruit/screens/login_scren.dart';
+import 'package:airecruit/screens/login_screen.dart';
 import 'package:airecruit/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

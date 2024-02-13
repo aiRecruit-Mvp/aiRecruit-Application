@@ -51,4 +51,29 @@ class UserController extends ChangeNotifier {
       print('Error: ${response.statusCode}');
     }
   }
+  Future<void> sendGoogleSignInDataToBackend(String code) async {
+    final Uri uri = Uri.parse('http://127.0.0.1:5000/google-sign-in');
+
+    try {
+      final response = await http.post(
+        uri,
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({'code': code}),
+      );
+
+      if (response.statusCode == 200) {
+        print('Google Sign-In data sent to /home endpoint successfully');
+        // Handle success
+      } else {
+        print(
+            'Error sending Google Sign-In data to /home endpoint: ${response.statusCode}');
+        // Handle other error responses
+      }
+    } catch (error) {
+      print('Error sending Google Sign-In data to /home endpoint: $error');
+      // Handle error
+    }
+  }
+
+
 }
