@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:airecruit/screens/signup_screen.dart';
 import 'package:airecruit/screens/forgotPassword_screen.dart';
 import 'package:flutter/services.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import '../services/Auth.dart';
 import '../utils/custom_textfield.dart';
 import '../utils/globalColors.dart'; // Import global colors
@@ -20,7 +21,10 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController passwordController = TextEditingController();
   bool _obscureText = true; // For toggling password visibility
   final AuthService authService = AuthService();
-
+  final GoogleSignIn googleSignIn = GoogleSignIn(
+      clientId:
+      '104792978938-8osg03385fiif0h9n084j2raadlacgsv.apps.googleusercontent.com',
+      scopes: ['email']);
   void loginUser() {
     authService.signInUser(
       context: context,
@@ -158,9 +162,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SocialIconButton(
-                        icon: Icons.facebook,
-                        onPressed: () {
-                          // Facebook login logic
+                        icon: Icons.login,
+                        onPressed: () async {
+                          // Perform Google Sign-In
+                          try {
+                            await _handleSignIn();
+                          } catch (error) {
+                            print('Error during Google Sign-In: $error');
+                          }
                         },
                         color: GlobalColors.buttonColor,
                       ),
@@ -182,6 +191,24 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+  Future<void> _handleSignIn() async {
+    try {
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+
+      if (googleUser != null) {
+        // Send Google Sign-In data to the backend
+        final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
+        final String? code = googleAuth.idToken;
+
+        if (code != null) {
+          await authService.sendGoogleSignInDataToBackend(code,context);
+        }
+      }
+    } catch (error) {
+      print('Error during Google Sign-In: $error');
+    }
   }
 }
 
@@ -205,4 +232,5 @@ class SocialIconButton extends StatelessWidget {
       onPressed: onPressed,
     );
   }
+
 }

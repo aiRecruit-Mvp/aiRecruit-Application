@@ -10,6 +10,7 @@ import 'package:path/path.dart';
 import '../models/user.dart';
 import '../providers/userprovider.dart';
 import '../screens/home_screen.dart';
+import '../screens/setpassword_screen.dart';
 import '../screens/signup_screen.dart';
 import '../utils/constants.dart';
 import '../utils/utils.dart';
@@ -112,7 +113,8 @@ class AuthService {
             'x-auth-token': token
           },
         );
-        userProvider.setUser(jsonDecode(userRes.body)); // Pass decoded JSON map
+        userProvider.setUser(jsonDecode(userRes.body));
+        print(object)// Pass decoded JSON map
       }
     } catch (e) {
       showSnackBar(context, e.toString());
@@ -224,4 +226,71 @@ class AuthService {
       showSnackBar(context, e.toString());
     }
   }
+  void setPassword(
+      {required BuildContext context,
+        required String newPassword,
+        required String email}) async {
+    try {
+
+
+      http.Response res = await http.post(
+        Uri.parse('${Constants.uri}/set-password'),
+        body: jsonEncode({'email': email, 'password': newPassword}),
+        headers: <String, String>{
+          'Content-Type': "application/json; charset=UTF-8",
+        },
+      );
+      httpErrorHandling(
+        response: res,
+        context: context,
+        onSuccess: () {
+          showSnackBar(context, 'Password successfully changed');
+          // Navigate to login screen or perform desired action
+        },
+      );
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
+  }
+
+  Future<void> sendGoogleSignInDataToBackend(String code, BuildContext context) async {
+    final Uri uri = Uri.parse('${Constants.uri}/google-sign-in');
+
+    try {
+      final response = await http.post(
+        uri,
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({'code': code}),
+      );
+
+      if (response.statusCode == 200) {
+        print('Google Sign-In data sent to /home endpoint successfully');
+        final responseBody = json.decode(response.body);
+
+        // Assuming 'user_id' is an object and you need the '_id' field from it
+        if (responseBody['user_id'] != null && responseBody['user_id'] is Map<String, dynamic>) {
+          final userId = responseBody['user_id']['email']; // Extract the '_id' as the userId
+         print("Extracted userId: $userId");
+
+          // Navigate to SetPasswordScreen with userId
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => SetPasswordScreen(userId: userId)),
+          );
+        } else {
+          print("The 'user_id' key is not present or not in the expected format.");
+        }
+      } else {
+        print('Error sending Google Sign-In data to /home endpoint: ${response.statusCode}');
+        // Handle other error responses
+      }
+    } catch (error) {
+      print('Error sending Google Sign-In data to /home endpoint: $error');
+      // Handle error
+    }
+  }
+
 }
+
+
+
