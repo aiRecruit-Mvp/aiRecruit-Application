@@ -114,7 +114,7 @@ class AuthService {
           },
         );
         userProvider.setUser(jsonDecode(userRes.body));
-        print(object)// Pass decoded JSON map
+        //print(object)// Pass decoded JSON map
       }
     } catch (e) {
       showSnackBar(context, e.toString());
