@@ -16,7 +16,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.delayed(Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => Login()),
+        MaterialPageRoute(builder: (context) => LoginScreen()),
       );
     });
   }
@@ -39,7 +39,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 height: 200,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('images/logo.png'),
+                    image: AssetImage('Assets/logo.png'),
                   ),
                 ),
               ),

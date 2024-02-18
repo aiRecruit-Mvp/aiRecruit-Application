@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class GlobalColors {
-  //primarycolor of airecuite
-  static Color primaryColor  = Color.fromARGB(255, 169, 61, 6); 
+  static const Color primaryColor = Color(0xFF090908); // Example blue color
+  static const Color secondaryColor = Color(0xFFFF683B); // Lighter blue
+  static const Color buttonColor = Color(0xFFFF683B); // Medium blue
+  static const Color linkColor = Color(0xFFFF683B); // Even lighter blue
 }

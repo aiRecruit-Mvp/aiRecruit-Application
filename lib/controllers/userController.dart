@@ -1,15 +1,18 @@
 import 'package:airecruit/models/User.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'dart:io';
-import 'package:linkedin_login/linkedin_login.dart';
 
 
 class UserController extends ChangeNotifier {
   User? _currentUser;
   List<User> _users = [];
   http.Client client;
+  final GoogleSignIn googleSignIn = GoogleSignIn(
+      clientId:
+          '1041497133171-827fcnok69gklr0ahk5sme491munfj27.apps.googleusercontent.com',
+      scopes: ['email']);
 
   UserController() : client = http.Client();
 
@@ -19,7 +22,7 @@ class UserController extends ChangeNotifier {
   Future<void> signupUser(
       String username, String email, String password) async {
     final response = await client.post(
-      Uri.parse('http:/192.168.33.1:5000/signup'),
+      Uri.parse('http://192.168.33.1:5000/signup'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'username': username,
@@ -38,8 +41,8 @@ class UserController extends ChangeNotifier {
   }
 
   Future<void> loginUser(String username, String password) async {
-    final response = await client.get(
-      Uri.parse('https://192.168.33.1:5000/signin/$username/$password'),
+    final response = await http.post(
+        Uri.parse('https://192.168.33.1:5000/signin/$username/$password')
     );
 
     if (response.statusCode == 200) {
@@ -57,14 +60,18 @@ class UserController extends ChangeNotifier {
       print('Error: ${response.statusCode}');
     }
   }
-Future<void> sendGoogleSignInDataToBackend(String code) async {
-    final Uri uri = Uri.parse('https://192.168.33.1:5000/google-sign-in');
+Future<void> sendGoogleSignInDataToBackend() async {
+    final Uri uri = Uri.parse('http://192.168.33.1:5000/home');
+    final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
 
-    try {
+    if (googleUser != null) {
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+    
       final response = await http.post(
         uri,
         headers: {'Content-Type': 'application/json'},
-        body: json.encode({'code': code}),
+        body: json.encode({'code': googleAuth.idToken}),
       );
 
       if (response.statusCode == 200) {
@@ -75,12 +82,22 @@ Future<void> sendGoogleSignInDataToBackend(String code) async {
             'Error sending Google Sign-In data to /home endpoint: ${response.statusCode}');
         // Handle other error responses
       }
-    } catch (error) {
-      print('Error sending Google Sign-In data to /home endpoint: $error');
-      // Handle error
     }
   }
 
+  Future<void> signInWithGitHub() async {
+    final Uri uri = Uri.parse('https://192.168.1.100:5000/github/login');
+
+    final response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      print('GitHub Sign-In initiated successfully');
+      // Handle success
+    } else {
+      print('Error initiating GitHub Sign-In: ${response.statusCode}');
+      // Handle error
+    }
+  }
   // Future<void> signInWithLinkedIn(BuildContext context) async {
   //   final LinkedInLoginResult linkedIn =
   //       await LinkedInLogin().logIn(context: context);

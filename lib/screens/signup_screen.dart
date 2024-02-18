@@ -1,156 +1,140 @@
-import 'package:airecruit/utils/globalColors.dart';
-import 'package:flutter/material.dart';
+import 'dart:io';
 
-class SignUp extends StatefulWidget {
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import '../services/Auth.dart';
+import '../utils/custom_textfield.dart';
+import '../utils/globalColors.dart'; // Assuming this contains your color scheme
+import 'login_screen.dart';
+
+class SignupScreen extends StatefulWidget {
+  const SignupScreen({Key? key}) : super(key: key);
+
   @override
-  _SignUpState createState() => _SignUpState();
+  State<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _SignUpState extends State<SignUp> {
-  final _formKey = GlobalKey<FormState>();
-  String _email = '';
-  String _password = '';
-  String _fullname = '';
+class _SignupScreenState extends State<SignupScreen> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final AuthService authService = AuthService();
+  File? _image;
 
+  final ImagePicker _picker = ImagePicker();
 
-
-  void _submitForm() {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      // Perform sign up logic here
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
     }
   }
-
-  void _goToSignInPage() {
-    
+  void signupUser() {
+    if (_image != null) {
+      authService.signUpUser(
+        context: context,
+        email: emailController.text,
+        password: passwordController.text,
+        name: nameController.text,
+        imageFile: _image!,  // Pass the selected image file
+      );
+    } else {
+      // Handle the case when an image is not selected
+      // For example, show a snackbar message
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please select an image.')));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-        child: Container(
-          padding: EdgeInsets.all(24),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 60),
               Text(
-                'Join Focusify Today ',
-                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                'Join AiRecruit Today',
+                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: GlobalColors.primaryColor), // Use global color
               ),
+              SizedBox(height: 8),
               Text(
                 'Unlock Your Productivity Potential!',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.normal),
+                style: TextStyle(fontSize: 18, color: GlobalColors.secondaryColor), // Use global color
               ),
               SizedBox(height: 48),
-              Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              Text(
+                'Fullname',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: GlobalColors.primaryColor),
+              ),
+              SizedBox(height: 8),
+              CustomTextField(
+                controller: nameController,
+                hintText: 'Enter your name',
+              ),
+              SizedBox(height: 24),
+              Text(
+                'Email',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: GlobalColors.primaryColor),
+              ),
+              SizedBox(height: 8),
+              CustomTextField(
+                controller: emailController,
+                hintText: 'Enter your email',
+              ),
+              SizedBox(height: 24),
+              Text(
+                'Password',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: GlobalColors.primaryColor),
+              ),
+              SizedBox(height: 8),
+              CustomTextField(
+                controller: passwordController,
+                hintText: 'Enter your password',
+              ),
+              SizedBox(height: 24),
+              // Add a widget to show the selected image or a placeholder
+              Center(
+                child: GestureDetector(
+                  onTap: _pickImage,
+                  child: _image != null
+                      ? CircleAvatar(
+                    radius: 60,
+                    backgroundImage: FileImage(_image!),
+                  )
+                      : CircleAvatar(
+                    radius: 60,
+                    backgroundColor: Colors.grey.shade200,
+                    child: Icon(Icons.camera_alt, color: Colors.grey.shade800),
+                  ),
+                ),
+              ),
+              SizedBox(height: 24),
+              Center(
+                child: ElevatedButton(
+                  onPressed: signupUser,
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(GlobalColors.buttonColor), // Use global color
+                    minimumSize: MaterialStateProperty.all(Size(double.infinity, 50)), // Full width button
+                  ),
+                  child: Text("Sign up"),
+                ),
+              ),
+              SizedBox(height: 24),
+              Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                     Text(
-                      'Fullname',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 8),
-                    TextFormField(
-                      keyboardType: TextInputType.emailAddress,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Please enter your fullname';
-                        }
-                        return null;
+                    Text("Already have an account? "),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
                       },
-                      onSaved: (value) {
-                        _fullname = value!;
-                      },
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        filled: true,
-                        fillColor: Colors.grey[200],
-                      ),
-                    ),
-                    SizedBox(height: 24),
-                    Text(
-                      'Email',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 8),
-                    TextFormField(
-                      keyboardType: TextInputType.emailAddress,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Please enter your email';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        _email = value!;
-                      },
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        filled: true,
-                        fillColor: Colors.grey[200],
-                      ),
-                    ),
-                    SizedBox(height: 24),
-                    Text(
-                      'Password',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 8),
-                    TextFormField(
-                      obscureText: true,
-                      validator: (value) {
-                        if (value!.length < 8) {
-                          return 'Password must be at least 8 characters long';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        _password = value!;
-                      },
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        filled: true,
-                        fillColor: Colors.grey[200],
-                      ),
-                    ),
-                    SizedBox(height: 24),
-                    Center(
-                      child: ElevatedButton(
-                        onPressed: _submitForm,
-                        child: Text('Sign up'),
-                        style: ElevatedButton.styleFrom(
-                          primary: GlobalColors.primaryColor,
-                          onPrimary: Colors.white,
-                          padding: EdgeInsets.symmetric(horizontal: 48, vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 24),
-                    Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text('Already have an account?'),
-                          SizedBox(width: 8),
-                          InkWell(
-                            onTap: _goToSignInPage, // Call the function to navigate to the sign-in page
-                            child: Text(
-                              'Sign In',
-                              style: TextStyle(
-                                color: GlobalColors.primaryColor,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                      child: Text("Sign In", style: TextStyle(color: GlobalColors.linkColor)), // Corrected action text and use global color
                     ),
                   ],
                 ),
@@ -162,4 +146,3 @@ class _SignUpState extends State<SignUp> {
     );
   }
 }
-

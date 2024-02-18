@@ -1,27 +1,55 @@
+import 'dart:convert';
+
 class User {
-  String username;
+  final String id;
+  final String name;
   String email;
-  String password;
+  final String token;
+  final String password;
+  final String profilePicturePath;
+
 
   User({
-    required this.username,
+    required this.id,
+    required this.name,
     required this.email,
+    required this.token,
     required this.password,
+    required this.profilePicturePath,
   });
 
-  factory User.fromJson(Map<String, dynamic> json) {
+
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'email': email,
+      'token': token,
+      'password': password,
+    };
+  }
+
+  factory User.fromMap(Map<String, dynamic> map) {
     return User(
-      username: json['name'],
-      email: json['email'],
-      password: json['password'],
+      id: map['_id'] ?? '',
+      name: map['name'] ?? '',
+      email: map['email'] ?? '',
+      token: map['token'] ?? '',
+      password: map['password'] ?? '',
+      profilePicturePath: map['file'] ?? '',
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'username': username,
-      'email': email,
-      'password': password,
-    };
+  String toJson() => json.encode(toMap());
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json['_id'] ?? '',
+      name: json['user']['name'] ?? '',
+      email: json['user']['email'] ?? '',
+      token: json['token'] ?? '',
+      password: json['user']['password'] ?? '',
+      profilePicturePath: json['user']['file'] ?? '',
+    );
   }
 }
