@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:airecruit/models/Jobs.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:airecruit/utils/custom_textfield.dart';
@@ -7,7 +8,6 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-
 import 'package:airecruit/models/JobApplication.dart';
 
 class ApplicationForm extends StatefulWidget {
@@ -28,11 +28,17 @@ class _ApplicationFormState extends State<ApplicationForm> {
 
   JobApplication? _jobApplication;
 
-  Future<String> generateCoverLetter() async {
+  Job job = Job(
+    description:
+        'We are looking for an experienced Senior Software Engineer to join our team.',
+  );
+
+  Future<String> generateCoverLetter(Job job) async {
     try {
-      final String prompt = "Write a cover letter";
+      final String prompt =
+          "Write a professional  cover letter for the position of Senior Software Engineer at edreams at edreams  you will play a crucial role in  '${job.description}'  this cover letter will apply this user Farah torkhani for that position (a cover letter as a user )";
       final String openaiApiKey =
-          "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";
+          "";
 
       final response = await http.post(
         Uri.parse('https://api.openai.com/v1//completions'),
@@ -52,7 +58,7 @@ class _ApplicationFormState extends State<ApplicationForm> {
         return data['choices'][0]['text'];
       } else if (response.statusCode == 429) {
         await Future.delayed(Duration(seconds: 20));
-        return generateCoverLetter();
+        return generateCoverLetter(job);
       } else {
         throw Exception(
             'Failed to generate cover letter: ${response.statusCode}');
@@ -79,27 +85,29 @@ class _ApplicationFormState extends State<ApplicationForm> {
   }
 
   void _postulate() async {
-    // Prepare the data to send to the backend
-    Map<String, dynamic> formData = {
-      'firstName': _firstNameController.text,
-      'lastName': _lastNameController.text,
-      'email': _emailController.text,
-      'cvFileName':
-          _cvFilePath ?? '', // If cvFilePath is null, send an empty string
-      'coverLetter': _motivationalLetter ??
-          '', // If motivationalLetter is null, send an empty string
-    };
-
     try {
-      final response = await http.post(
-        Uri.parse(
-            'http://192.168.56.1:5000/save-application'), // Replace with your Flask server URL
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(formData),
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse('http://192.168.56.1:5000/save-application'),
       );
 
+      request.fields['firstName'] = _firstNameController.text;
+      request.fields['lastName'] = _lastNameController.text;
+      request.fields['email'] = _emailController.text;
+      request.fields['coverLetter'] = _motivationalLetter ?? '';
+
+      var cvFile = File(_cvFilePath!);
+      var cvStream = http.ByteStream(cvFile.openRead());
+      var cvLength = await cvFile.length();
+      var cvMultipartFile = http.MultipartFile(
+        'cvPdf',
+        cvStream,
+        cvLength,
+        filename: _cvFilePath!.split('/').last,
+      );
+      request.files.add(cvMultipartFile);
+
+      var response = await request.send();
       if (response.statusCode == 200) {
         // Application saved successfully
         showDialog(
@@ -180,24 +188,36 @@ class _ApplicationFormState extends State<ApplicationForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Application Form'),
+        title: Row(
+          children: [
+            Image.asset(
+              'Assets/logo.png',
+              width: 40,
+              height: 40,
+            ),
+            SizedBox(width: 10),
+            Text(
+              'My Job Applications',
+              style: TextStyle(
+                  fontSize: 20, fontFamily: AutofillHints.creditCardNumber),
+            ),
+          ],
+        ),
       ),
       body: Column(
         children: [
-          Container(
-            alignment: Alignment.topCenter,
-            margin: EdgeInsets.only(top: 20),
-            child: Image.asset(
-              'Assets/logo.png',
-              height: 80,
-            ),
-          ),
+        
           Expanded(
             child: Row(
               children: [
                 Expanded(
                   child: Stepper(
                     currentStep: _currentStep,
+                    connectorColor: MaterialStateProperty.resolveWith<Color>(
+                      (Set<MaterialState> states) {
+                        return GlobalColors.secondaryColor;
+                      },
+                    ),
                     onStepTapped: (int index) {
                       setState(() {
                         _currentStep = index;
@@ -244,10 +264,18 @@ class _ApplicationFormState extends State<ApplicationForm> {
                                 borderColor: GlobalColors.secondaryColor,
                                 focusedBorderColor: GlobalColors.secondaryColor,
                                 keyboardType: TextInputType.emailAddress,
-                                validator: (value) => !value!.contains('@')
-                                    ? 'Enter a valid email'
-                                    : null,
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'This field is required';
+                                  } else if (!RegExp(
+                                          r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                                      .hasMatch(value)) {
+                                    return 'Enter a valid email';
+                                  }
+                                  return null;
+                                },
                               ),
+
                               SizedBox(height: 16.0),
                             ],
                           ),
@@ -317,11 +345,18 @@ class _ApplicationFormState extends State<ApplicationForm> {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             FutureBuilder<String>(
-                              future: generateCoverLetter(),
+                              future: generateCoverLetter(job),
                               builder: (context, snapshot) {
                                 if (snapshot.connectionState ==
                                     ConnectionState.waiting) {
-                                  return CircularProgressIndicator();
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0),
+                                    child: Center(
+                                        child: CircularProgressIndicator(
+                                      color: GlobalColors.secondaryColor,
+                                    )),
+                                  );
                                 } else if (snapshot.hasError) {
                                   return Text('Error: ${snapshot.error}');
                                 } else {
@@ -332,6 +367,14 @@ class _ApplicationFormState extends State<ApplicationForm> {
                             ),
                             SizedBox(height: 16.0),
                             ElevatedButton(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        GlobalColors.secondaryColor),
+                                foregroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Colors.white),
+                              ),
                               onPressed: () {
                                 if ( //_cvFilePath != null &&
                                     _motivationalLetter != null) {
@@ -370,7 +413,7 @@ class _ApplicationFormState extends State<ApplicationForm> {
                       ),
                       Step(
                         title: Text(
-                          'Step 4',
+                          'Last Step before submission',
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                         isActive: _currentStep == 3,

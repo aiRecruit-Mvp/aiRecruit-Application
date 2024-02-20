@@ -4,7 +4,7 @@ import 'package:airecruit/screens/home_screen.dart';
 import 'package:airecruit/screens/signup_screen.dart';
 import 'package:airecruit/services/Auth.dart';
 import 'package:flutter/material.dart';
-
+import 'package:airecruit/screens/JobApplicationState.dart';
 import 'package:provider/provider.dart';
 
 void main() {
