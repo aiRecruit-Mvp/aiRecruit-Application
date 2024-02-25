@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:airecruit/screens/JobApplicationState.dart';
 import 'package:provider/provider.dart';
 
+
 void main() {
   runApp(MultiProvider(
       providers: [ChangeNotifierProvider(create: (_) => UserProvider())],
@@ -22,21 +23,26 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final AuthService authService = AuthService();
+
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     authService.getUserData(context);
   }
+  
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+    
         title: 'Flutter Demo',
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(),
         home: Provider.of<UserProvider>(context).user.token.isEmpty
-            ? ApplicationForm()
+            ? JobApplicationsScreen()
             : HomeScreen());
   }
 }

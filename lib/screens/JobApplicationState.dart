@@ -1,7 +1,23 @@
-import 'package:airecruit/utils/globalColors.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Job Applications',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: JobApplicationsScreen(),
+    );
+  }
+}
 
 class JobApplicationsScreen extends StatefulWidget {
   @override
@@ -10,13 +26,13 @@ class JobApplicationsScreen extends StatefulWidget {
 
 class _JobApplicationsScreenState extends State<JobApplicationsScreen> {
   List<dynamic> jobApplications = [];
-  String selectedStatus = ''; // Variable to store the selected status
+  String selectedStatus = 'All'; // Default selected status
+  int selectedApplicationIndex = -1;
 
   @override
   void initState() {
     super.initState();
     fetchJobApplications();
-    selectedStatus = 'In Progress';
   }
 
   Future<void> fetchJobApplications() async {
@@ -24,60 +40,67 @@ class _JobApplicationsScreenState extends State<JobApplicationsScreen> {
       final response = await http
           .get(Uri.parse('http://192.168.56.1:5000/job-applications'));
       if (response.statusCode == 200) {
+        final List<dynamic> applications =
+            json.decode(response.body) as List<dynamic>;
+        for (final application in applications) {
+          final jobID = application['job_id'];
+          final jobDetails = await fetchJobDetails(jobID);
+          application['jobDetails'] = jobDetails;
+        }
         setState(() {
-          jobApplications = json.decode(response.body) as List<dynamic>;
+          jobApplications = applications;
         });
-        print(jobApplications);
       } else {
         // Handle error
-        print('Failed to load job applications: ${response.statusCode}');
+        print('Failed to fetch job applications: ${response.statusCode}');
       }
     } catch (e) {
       // Handle error
-      print('Error loading job applications: $e');
+      print('Error fetching job applications: $e');
     }
   }
+
+  Future<Map<String, dynamic>> fetchJobDetails(String jobID) async {
+    try {
+      final response =
+          await http.get(Uri.parse('http://192.168.56.1:5000/jobs/$jobID'));
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jobDetails =
+            json.decode(response.body) as Map<String, dynamic>;
+        return jobDetails;
+      } else {
+        // Handle error
+        print('Failed to fetch job details: ${response.statusCode}');
+        return {}; // Return an empty map
+      }
+    } catch (e) {
+      // Handle error
+      print('Error fetching job details: $e');
+      return {}; // Return an empty map
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          children: [
-            Image.asset(
-              'Assets/logo.png',
-              width: 40,
-              height: 40,
-            ),
-            SizedBox(width: 10),
-            Text(
-              'My Job Applications',
-              style: TextStyle(
-                  fontSize: 20, fontFamily: AutofillHints.creditCardNumber),
-            ),
-          ],
-        ),
+        title: Text('Job Applications'),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SizedBox(height: 20),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
-            child: Row(
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Wrap(
+              spacing: 8.0,
               children: [
+                _buildStatusButton('All'),
                 _buildStatusButton('In Progress'),
-                SizedBox(
-                    width: 10), // Adjust the space between buttons as needed
                 _buildStatusButton('Rejected'),
-                SizedBox(width: 10),
                 _buildStatusButton('Archived'),
-                SizedBox(width: 10),
                 _buildStatusButton('Interview scheduled'),
-                SizedBox(width: 10),
                 _buildStatusButton('Shortlisted'),
-                SizedBox(width: 10),
                 _buildStatusButton('Hired'),
               ],
             ),
@@ -87,13 +110,41 @@ class _JobApplicationsScreenState extends State<JobApplicationsScreen> {
               itemCount: jobApplications.length,
               itemBuilder: (context, index) {
                 final application = jobApplications[index];
-                return ListTile(
-                  title: Text('Job ID: ${application['firstName']}'),
-                  subtitle: Text('Status: ${application['lastName']}'),
-                  onTap: () {
-                    // Handle tapping on a job application
-                    // You can navigate to a detailed view of the job application here
-                  },
+                final firstName = application['firstName'];
+                final lastName = application['lastName'];
+                final email = application['email'];
+                final jobDetails = application['jobDetails'];
+                final jobTitle =
+                    jobDetails != null ? jobDetails['jobTitle'] : 'N/A';
+                final location =
+                    jobDetails != null ? jobDetails['location'] : 'N/A';
+
+                return Column(
+                  children: [
+                    ListTile(
+                      title: Text('Name: $firstName $lastName'),
+                      subtitle: Text('Email: $email'),
+                      onTap: () {
+                        setState(() {
+                          selectedApplicationIndex =
+                              selectedApplicationIndex == index ? -1 : index;
+                        });
+                      },
+                    ),
+                    if (selectedApplicationIndex == index)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Job Title: $jobTitle'),
+                            Text('Location: $location'),
+                            // Add more details here as needed
+                          ],
+                        ),
+                      ),
+                    Divider(), // Divider between each item
+                  ],
                 );
               },
             ),
@@ -104,33 +155,38 @@ class _JobApplicationsScreenState extends State<JobApplicationsScreen> {
   }
 
   Widget _buildStatusButton(String status) {
-    return GestureDetector(
-      onTap: () {
+    return ElevatedButton(
+      onPressed: () {
         setState(() {
-          selectedStatus = status; // Update the selected status
+          selectedStatus = status;
         });
       },
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-        decoration: BoxDecoration(
-          color: selectedStatus == status
-              ? GlobalColors.secondaryColor
-              : Colors.transparent,
-          border: selectedStatus == status
-              ? null
-              : Border.all(
-                  width: 0.5,
-                  color: Colors.black), // Add border when not selected
-          borderRadius: BorderRadius.circular(5.0),
-        ),
-        child: Text(
-          status,
-          style: TextStyle(
-              color: selectedStatus == status
-                  ? Colors.white
-                  : Colors.black), // Set text color based on selected status
-        ),
+      style: ElevatedButton.styleFrom(
+        primary: selectedStatus == status ? Colors.blue : Colors.grey,
+      ),
+      child: Text(status),
+    );
+  }
+
+  Widget _buildJobApplicationTile(Map<String, dynamic> application) {
+    final firstName = application['firstName'];
+    final lastName = application['lastName'];
+    final email = application['email'];
+    final job = application['job'];
+    final jobTitle = job != null ? job['jobTitle'] : 'N/A';
+    final location = job != null ? job['location'] : 'N/A';
+
+    return ListTile(
+      title: Text('Name: $firstName $lastName'),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Email: $email'),
+          Text('Job Title: $jobTitle'),
+          Text('Location: $location'),
+        ],
       ),
     );
   }
+
 }

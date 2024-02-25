@@ -7,7 +7,7 @@ class User {
   final String token;
   final String password;
   final String profilePicturePath;
-
+  final List<String> skills; // Add skills property
 
   User({
     required this.id,
@@ -16,9 +16,8 @@ class User {
     required this.token,
     required this.password,
     required this.profilePicturePath,
+    required this.skills, // Initialize skills
   });
-
-
 
   Map<String, dynamic> toMap() {
     return {
@@ -26,6 +25,7 @@ class User {
       'email': email,
       'token': token,
       'password': password,
+      'skills': skills, // Include skills in map
     };
   }
 
@@ -37,6 +37,7 @@ class User {
       token: map['token'] ?? '',
       password: map['password'] ?? '',
       profilePicturePath: map['file'] ?? '',
+      skills: [], // Initialize skills
     );
   }
 
@@ -50,6 +51,7 @@ class User {
       token: json['token'] ?? '',
       password: json['user']['password'] ?? '',
       profilePicturePath: json['user']['file'] ?? '',
+      skills: ['Python', 'Flask', 'MongoDB'], 
     );
   }
 }

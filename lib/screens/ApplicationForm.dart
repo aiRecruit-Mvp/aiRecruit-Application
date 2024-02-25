@@ -9,6 +9,10 @@ import 'dart:convert';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:airecruit/models/JobApplication.dart';
+import 'package:airecruit/models/JobApplicationData.dart';
+import 'package:dropbox_client/dropbox_client.dart';
+import 'package:airecruit/controllers/jobApplicationsController.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class ApplicationForm extends StatefulWidget {
   @override
@@ -21,168 +25,117 @@ class _ApplicationFormState extends State<ApplicationForm> {
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-
+  String? dropboxClientId;
+  String? dropboxSecret;
   int _currentStep = 0;
   String? _cvFilePath;
   String? _motivationalLetter;
-
+  double? fitScore;
+  JobApplicationController _controller = JobApplicationController(
+    firstNameController: TextEditingController(),
+    lastNameController: TextEditingController(),
+    emailController: TextEditingController(),
+  );
   JobApplication? _jobApplication;
 
-  Job job = Job(
+  @override
+  void initState() {
+    super.initState();
+    // Retrieve Dropbox credentials
+    //when the widget initializes
+    // _controller.retrieveDropboxCredentials();
+
+    _controller.applyForJob((fitScore) {
+      setState(() {
+        this.fitScore = fitScore;
+      });
+    });
+  }
+
+
+  Future<void> uploadFileFromGoogleDrive(String fileId) async {
+    try {
+      // Authenticate with Google Drive
+
+      // File uploaded successfully
+      print('File uploaded from Google Drive successfully!');
+    } catch (e) {
+      // Handle any errors that occur during the upload process
+      print('Error uploading file from Google Drive: $e');
+    }
+  }
+
+Future<void> requestStoragePermission() async {
+    var status = await Permission.storage.request();
+    if (status.isGranted) {
+      // Permission granted, proceed with file picking
+      try {
+        FilePickerResult? result = await FilePicker.platform.pickFiles(
+          type: FileType.custom,
+          allowedExtensions: ['pdf', 'doc', 'docx'],
+        );
+        if (result != null) {
+          setState(() {
+            _cvFilePath = result.files.single.path!;
+          });
+        }
+      } catch (e) {
+        print('File picking error: $e');
+        // Handle file picking error
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('File Picking Error'),
+            content: Text('An error occurred while picking the file.'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      }
+    } else {
+      // Permission denied, handle accordingly
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Permission Denied'),
+          content: Text('Storage permission is required to pick a file.'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+  Future<void> listFolder(String path) async {
+    if (await _controller.checkAuthorized(true)) {
+      final result = await Dropbox.listFolder(path);
+      setState(() {});
+    }
+  }
+
+  
+
+
+Job job = Job(
     description:
         'We are looking for an experienced Senior Software Engineer to join our team.',
+    jobTitle: 'Senior Software Engineer',
+    location: 'Tunis',
+    requirements: ['Python', 'Flask', 'MongoDB'],
   );
 
-  Future<String> generateCoverLetter(Job job) async {
-    try {
-      final String prompt =
-          "Write a professional  cover letter for the position of Senior Software Engineer at edreams at edreams  you will play a crucial role in  '${job.description}'  this cover letter will apply this user Farah torkhani for that position (a cover letter as a user )";
-      final String openaiApiKey =
-          "";
-
-      final response = await http.post(
-        Uri.parse('https://api.openai.com/v1//completions'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $openaiApiKey',
-        },
-        body: json.encode({
-          'prompt': prompt,
-          'max_tokens': 150,
-          'model': 'davinci-002',
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        return data['choices'][0]['text'];
-      } else if (response.statusCode == 429) {
-        await Future.delayed(Duration(seconds: 20));
-        return generateCoverLetter(job);
-      } else {
-        throw Exception(
-            'Failed to generate cover letter: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error generating cover letter: $e');
-      throw Exception('Failed to generate cover letter');
-    }
-  }
-
-  void saveAsPDF(String coverLetter) {
-    final pdf = pw.Document();
-
-    pdf.addPage(pw.Page(
-      build: (pw.Context context) {
-        return pw.Center(
-          child: pw.Text(coverLetter),
-        );
-      },
-    ));
-
-    // final output = File('cover_letter.pdf').openWrite();
-    // pdf.save().then((_) => output.close());
-  }
-
-  void _postulate() async {
-    try {
-      var request = http.MultipartRequest(
-        'POST',
-        Uri.parse('http://192.168.56.1:5000/save-application'),
-      );
-
-      request.fields['firstName'] = _firstNameController.text;
-      request.fields['lastName'] = _lastNameController.text;
-      request.fields['email'] = _emailController.text;
-      request.fields['coverLetter'] = _motivationalLetter ?? '';
-
-      var cvFile = File(_cvFilePath!);
-      var cvStream = http.ByteStream(cvFile.openRead());
-      var cvLength = await cvFile.length();
-      var cvMultipartFile = http.MultipartFile(
-        'cvPdf',
-        cvStream,
-        cvLength,
-        filename: _cvFilePath!.split('/').last,
-      );
-      request.files.add(cvMultipartFile);
-
-      var response = await request.send();
-      if (response.statusCode == 200) {
-        // Application saved successfully
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text('Application Submitted'),
-            content: Text('Your application has been submitted successfully.'),
-            actions: <Widget>[
-              TextButton(
-                child: Text('OK'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          ),
-        );
-      }
-    } catch (e) {
-      print('Error submitting application: $e');
-      // Handle error
-      if (e is http.ClientException) {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text('Error'),
-            content: Text(
-                'Failed to submit application. Please check your internet connection and try again later.'),
-            actions: <Widget>[
-              TextButton(
-                child: Text('OK'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          ),
-        );
-      } else if (e is FormatException) {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text('Error'),
-            content: Text(
-                'Invalid JSON format. Please check the data sent and try again.'),
-            actions: <Widget>[
-              TextButton(
-                child: Text('OK'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          ),
-        );
-      } else {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text('Error'),
-            content:
-                Text('An unexpected error occurred. Please try again later.'),
-            actions: <Widget>[
-              TextButton(
-                child: Text('OK'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          ),
-        );
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -201,12 +154,24 @@ class _ApplicationFormState extends State<ApplicationForm> {
               style: TextStyle(
                   fontSize: 20, fontFamily: AutofillHints.creditCardNumber),
             ),
+          
           ],
         ),
       ),
       body: Column(
         children: [
-        
+          SizedBox(height: 16.0),
+          Text(
+            fitScore != null
+                ? 'Fit Score: ${fitScore!.toStringAsFixed(2)}%'
+                : 'Fit Score: N/A',
+            style: TextStyle(
+              fontSize: 18, color: GlobalColors.secondaryColor,
+              fontWeight:
+                  FontWeight.bold, // Add this line to make the text bold
+            ),
+          ),
+
           Expanded(
             child: Row(
               children: [
@@ -275,7 +240,6 @@ class _ApplicationFormState extends State<ApplicationForm> {
                                   return null;
                                 },
                               ),
-
                               SizedBox(height: 16.0),
                             ],
                           ),
@@ -303,6 +267,7 @@ class _ApplicationFormState extends State<ApplicationForm> {
                                         Colors.white),
                               ),
                               onPressed: () async {
+                                try {
                                 FilePickerResult? result =
                                     await FilePicker.platform.pickFiles(
                                   type: FileType.custom,
@@ -313,7 +278,11 @@ class _ApplicationFormState extends State<ApplicationForm> {
                                     _cvFilePath = result.files.single.path!;
                                   });
                                 }
+                                } catch (e) {
+                                  print('File picking error: $e');
+                                }
                               },
+
                               child: Text('Choose CV File'),
                             ),
                             if (_cvFilePath != null)
@@ -345,7 +314,7 @@ class _ApplicationFormState extends State<ApplicationForm> {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             FutureBuilder<String>(
-                              future: generateCoverLetter(job),
+                              future: _controller.generateCoverLetter(job),
                               builder: (context, snapshot) {
                                 if (snapshot.connectionState ==
                                     ConnectionState.waiting) {
@@ -378,7 +347,8 @@ class _ApplicationFormState extends State<ApplicationForm> {
                               onPressed: () {
                                 if ( //_cvFilePath != null &&
                                     _motivationalLetter != null) {
-                                  saveAsPDF(_motivationalLetter!);
+                                  _controller.saveAsPDF(
+                                      _motivationalLetter!, context);
                                   _jobApplication = JobApplication(
                                     jobId: '123', // Change to actual job ID
                                     userId: '456', // Change to actual user ID
@@ -439,7 +409,10 @@ class _ApplicationFormState extends State<ApplicationForm> {
                                     MaterialStateProperty.all<Color>(
                                         Colors.white),
                               ),
-                              onPressed: _postulate,
+                              onPressed: () async {
+                                await _controller.postulate(
+                                    context); // Wait for the Future<void> to complete
+                              },
                               child: Text('Confirm'),
                             ),
                           ],
