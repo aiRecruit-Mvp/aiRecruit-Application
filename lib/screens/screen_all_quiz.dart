@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:quizapp/model/quiz.dart';
+import 'package:airecruit/models/quiz.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:quizapp/utils/constants.dart';
-import 'package:quizapp/utils/globalColor.dart';
+import 'package:airecruit/utils/constants.dart';
+import 'package:airecruit/utils/globalColor.dart';
 
 class ScreenAllQuiz extends StatefulWidget {
   const ScreenAllQuiz({Key? key}) : super(key: key);

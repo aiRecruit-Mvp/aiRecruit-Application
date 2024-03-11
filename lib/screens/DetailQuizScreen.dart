@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:quizapp/model/quiz.dart';
-import 'package:quizapp/utils/globalColor.dart';
+import 'package:airecruit/models/quiz.dart';
+import 'package:airecruit/utils/globalColor.dart';
 class DetailQuizScreen extends StatefulWidget {
   const DetailQuizScreen({Key? key}) : super(key: key);
 
